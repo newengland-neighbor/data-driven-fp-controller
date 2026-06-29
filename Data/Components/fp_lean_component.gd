@@ -36,10 +36,11 @@ func ready() -> void: pass
 func handle_input(_event:InputEvent) -> void: pass
 
 func update(_delta:float) -> void: 
-	if !lean_sensor: return
+	if !lean_sensor or !component_owner: return
 	lean_sensor.position.y = component_owner.get_lerp_target().position.y
 
 func physics_update(_delta:float) -> void: 
+	if !component_owner: return
 	_handle_lean(_delta)
 
 ##############

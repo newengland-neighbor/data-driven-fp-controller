@@ -28,7 +28,7 @@ func bind(new:ComponentCore) -> void:
 		return
 	super.bind(new)
 	
-	var move_comp : FPMovementComponent = component_owner.owner.get_component(FPMovementComponent)
+	var move_comp : FPMovementComponent = component_owner.get_owner().get_component(FPMovementComponent)
 	if move_comp: 
 		var fall_state : FPMS_Falling = move_comp.get_state(FPMS_Falling)
 		if fall_state: fall_state.has_landed.connect(_on_landing_received)
@@ -39,6 +39,8 @@ func ready() -> void: pass
 func handle_input(_event:InputEvent) -> void: pass
 
 func update(_delta:float) -> void: 
+	if !component_owner: return
+	
 	cam_pos_modifier = (
 		get_headbob_vector(_delta)[0] # Position data
 		+ get_fallkick_vector(_delta)[0] # More position data
@@ -57,7 +59,7 @@ func physics_update(_delta:float) -> void: pass
 func get_tilt_rot() -> Vector3:
 	if !enable_tilt: return Vector3.ZERO
 	var tilt_values : Vector2 = Vector2.ZERO
-	var player_ref : FPController = component_owner.owner
+	var player_ref : FPController = component_owner.get_owner()
 	var v : Vector3 = player_ref.velocity
 	var speed : float = Vector2(v.x, v.z).length()
 	if speed > 0.1 and player_ref.is_on_floor():
@@ -89,7 +91,7 @@ func get_fallkick_vector(_delta:float) -> Array[Vector3]:
 	]
 
 func get_headbob_vector(_delta:float) -> Array[Vector3]:
-	var player_ref : FPController = component_owner.owner
+	var player_ref : FPController = component_owner.get_owner()
 	var v : Vector3 = player_ref.velocity
 	var speed : float = Vector2(v.x, v.z).length()
 	#print(speed)

@@ -54,9 +54,6 @@ func ready() -> void:
 		subcomp.ready()
 
 func update(_delta:float) -> void: 
-	for subcomp in subcomponents:
-		subcomp.update(_delta)
-	
 	var move_comp : FPMovementComponent = owner.get_component(FPMovementComponent)
 	if !move_comp:
 		printerr("Error: FPMovementComponent required!")
@@ -68,6 +65,9 @@ func update(_delta:float) -> void:
 		_target_lerp_pos,
 		_delta * speed_mod * cam_lerp_speed
 	)
+
+	for subcomp in subcomponents:
+		subcomp.update(_delta)
 
 var lerped_rot_mods : Vector3 = Vector3.ZERO
 func physics_update(_delta:float) -> void: 

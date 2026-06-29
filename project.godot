@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="FPS Controller"
+config/name="First Person Controller"
 run/main_scene="uid://foylxf51ptq7"
 config/features=PackedStringArray("4.4", "Forward Plus")
 run/max_fps=60

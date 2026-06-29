@@ -25,5 +25,6 @@ The following actions are executed with the following controls:
 - Camera movement: Mouse
 - Jumping: Space
 - Crouching: C
+- Leaning: Q, E
 
 The control scheme can be modified in the Godot Editor in: Project Settings &rarr; Input Map

@@ -26,7 +26,7 @@ func bind(new:ComponentCore) -> void:
 	shape_cast.shape = shape
 	shape_cast.target_position = Vector3(1.0, 0.0, 0.0)
 	
-	request_node.connect(component_owner.owner._on_request_node, ConnectFlags.CONNECT_ONE_SHOT)
+	request_node.connect(component_owner.get_owner()._on_request_node, ConnectFlags.CONNECT_ONE_SHOT)
 	request_node.emit(shape_cast)
 	lean_sensor = shape_cast
 	
@@ -48,7 +48,7 @@ func physics_update(_delta:float) -> void:
 var curr_lean_rot : float = 0.0
 func _get_lean_direction() -> int:
 	# If the player isn't idle, don't allow a lean.
-	var move_comp : FPMovementComponent = component_owner.owner.get_component(FPMovementComponent)
+	var move_comp : FPMovementComponent = component_owner.get_owner().get_component(FPMovementComponent)
 	if !move_comp or move_comp.current_state.get_index() != FPMoveState.MoveStates.IDLE:
 		return 0
 	# If the player is sprinting, don't allow a lean.

@@ -2,7 +2,7 @@
 
 <h2 align="left">Overview</h2>
 
-This project consists of a basic, resource-driven implementation of a first-person player controller, and an environmental scene used to test the former's functionality. The main scene of the project is set to the aforementioned environmental scene.
+This project consists of a basic, resource-driven implementation of a first-person player controller, and an environmental scene used to test the former's functionality. This project is designed for Godot Engine versions 4.4.1 or above. The main scene of the project is set to the aforementioned environmental scene.
 
 The first-person player controller comes with the following features:
 

@@ -42,12 +42,15 @@ func handle_stance() -> void:
 	print("\nCurrent Stance: %s. Transitioning..." % (
 		"Standing" if curr_stance == 0 else "Crouching")
 		)
+	
 	match curr_stance:
 		Stances.STANDING: curr_stance = Stances.CROUCHING
 		Stances.CROUCHING: 
 			## If player would collide with the ceiling by standing, exit function.
 			var move_comp : FPMovementComponent = character_body_ref.get_component(FPMovementComponent)
-			if !move_comp: printerr("Absent FPMovementComponent.")
+			if !move_comp: 
+				printerr("Error: Absent FPMovementComponent in %s's component array." % character_body_ref.name)
+				return
 			if !move_comp.ceiling_check(0.75): 
 				printerr("Stance change cancelled. Ceiling detected.")
 				return
@@ -60,5 +63,5 @@ func handle_stance() -> void:
 	)
 	send_col_shape_data.emit(shape_data_to_send)
 	stance_changed.emit(curr_stance)
-
-print("New Stance: %s" % ("Standing" if curr_stance == 0 else "Crouching"))
+	
+	print("New Stance: %s" % ("Standing" if curr_stance == 0 else "Crouching"))

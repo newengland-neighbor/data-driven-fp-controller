@@ -27,4 +27,4 @@ The following actions are executed with the following controls:
 - Crouching: C
 - Leaning: Q, E
 
-The control scheme can be modified in the Godot Editor in: Project Settings &rarr; Input Map
+The control scheme for all but the camera's mouse-driven movement can be modified in the Godot Editor in: Project Settings &rarr; Input Map

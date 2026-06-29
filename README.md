@@ -26,4 +26,4 @@ The following actions are executed with the following controls:
 - Jumping: Space
 - Crouching: C
 
-The control scheme can be modified in-editor in: Project Settings -> Input Map
+The control scheme can be modified in the Godot Editor in: Project Settings &rarr; Input Map

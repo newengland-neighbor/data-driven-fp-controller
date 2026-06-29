@@ -19,6 +19,7 @@ enum Stances {
 	CROUCHING
 	}
 var curr_stance : Stances = Stances.STANDING
+
 signal stance_changed(new:int)
 signal send_col_shape_data(data:Dictionary)
 
@@ -42,9 +43,7 @@ func handle_stance() -> void:
 		"Standing" if curr_stance == 0 else "Crouching")
 		)
 	match curr_stance:
-		Stances.STANDING: 
-			curr_stance = Stances.CROUCHING
-			owner.set_cylinder_shape_dimensions(collider_dimensions["Crouch"])
+		Stances.STANDING: curr_stance = Stances.CROUCHING
 		Stances.CROUCHING: 
 			## If player would collide with the ceiling by standing, exit function.
 			var move_comp : FPMovementComponent = owner.get_component(FPMovementComponent)
@@ -53,8 +52,6 @@ func handle_stance() -> void:
 				printerr("Stance change cancelled. Ceiling detected.")
 				return
 			curr_stance = Stances.STANDING
-			owner.set_cylinder_shape_dimensions(collider_dimensions["Stand"])
-	print("New Stance: %s" % ("Standing" if curr_stance == 0 else "Crouching"))
 	
 	var shape_data_to_send : Dictionary = (
 		collider_dimensions["Crouch"]
@@ -63,3 +60,5 @@ func handle_stance() -> void:
 	)
 	send_col_shape_data.emit(shape_data_to_send)
 	stance_changed.emit(curr_stance)
+
+print("New Stance: %s" % ("Standing" if curr_stance == 0 else "Crouching"))

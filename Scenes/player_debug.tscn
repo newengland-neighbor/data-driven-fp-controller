@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://baxuqsni2mlmg"]
+
+[ext_resource type="Script" uid="uid://wt3wx60olalq" path="res://Scripts/debug.gd" id="1_kfdlg"]
+
+[node name="Debug" type="CanvasLayer"]
+script = ExtResource("1_kfdlg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 20
+
+[node name="DebugLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "DEBUG:
+Current State: ????"
+
+[node name="Headbob" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Enable Headbob"
+
+[node name="HeadbobIntensity" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HeadbobIntensity"]
+layout_mode = 2
+text = "Headbob Intensity"
+
+[node name="HSlider" type="HSlider" parent="VBoxContainer/HeadbobIntensity"]
+layout_mode = 2
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[node name="CameraTilt" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Enable Camera Tilt"
+
+[node name="CamTiltIntensity" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/CamTiltIntensity"]
+layout_mode = 2
+text = "Tilt Intensity"
+
+[node name="HSlider" type="HSlider" parent="VBoxContainer/CamTiltIntensity"]
+layout_mode = 2
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[connection signal="pressed" from="VBoxContainer/Headbob" to="." method="remove_focus"]
+[connection signal="toggled" from="VBoxContainer/Headbob" to="." method="set_bob_slider_visibility"]
+[connection signal="pressed" from="VBoxContainer/CameraTilt" to="." method="remove_focus"]
+[connection signal="toggled" from="VBoxContainer/CameraTilt" to="." method="set_tilt_slider_visibility"]

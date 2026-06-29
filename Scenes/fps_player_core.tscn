@@ -1,0 +1,115 @@
+[gd_scene load_steps=16 format=3 uid="uid://ct7fljjvustbi"]
+
+[ext_resource type="Script" uid="uid://dsgxbj3ivlwgo" path="res://Scripts/fps_controller.gd" id="1_1670m"]
+[ext_resource type="Script" uid="uid://c5hv1f5voo1rw" path="res://Scripts/player_camera.gd" id="2_cklkl"]
+[ext_resource type="Script" uid="uid://0fawhc5ghx0j" path="res://Scripts/finite_state_machine.gd" id="2_necg7"]
+[ext_resource type="Script" uid="uid://chxbnwqohfaey" path="res://Scripts/Player States/idle.gd" id="3_cklkl"]
+[ext_resource type="Script" uid="uid://dgetlbwighxrc" path="res://Scripts/camera_effects.gd" id="3_ivkly"]
+[ext_resource type="Script" uid="uid://b3dubn8oae0so" path="res://Scripts/Player States/moving.gd" id="4_7cf7v"]
+[ext_resource type="AudioStream" uid="uid://cf6hdhrafncvy" path="res://Sounds/PlayerFootstep.wav" id="4_wmid5"]
+[ext_resource type="Script" uid="uid://cm4hp44ky2l4s" path="res://Scripts/Player States/jumping.gd" id="6_cklkl"]
+[ext_resource type="Script" uid="uid://bes2lvsroso3x" path="res://Scripts/Player States/falling.gd" id="7_q1q1h"]
+[ext_resource type="Script" uid="uid://das4w7wutwowm" path="res://Scripts/Player States/in_menu.gd" id="8_7hsrb"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_onsno"]
+height = 1.7
+radius = 0.25
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vma38"]
+radius = 0.25
+
+[sub_resource type="Curve" id="Curve_wmid5"]
+_limits = [-1.0, 1.0, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 6.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0), -6.0, -6.0, 0, 0, Vector2(0.75, -1), 0.0, 0.0, 0, 0, Vector2(1, 0), 6.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_lnb8x"]
+_limits = [-1.0, 1.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.25, 0), -6.0, -6.0, 0, 0, Vector2(0.5, -1), 0.0, 0.0, 0, 0, Vector2(0.75, 0), 6.0, 6.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_xohdh"]
+_limits = [0.0, 1.0, 0.0, 0.5]
+_data = [Vector2(0, 1), 0.0, -7.0, 0, 0, Vector2(0.5, 0), -0.154124, 0.0, 0, 0]
+point_count = 2
+
+[node name="FPSPlayer" type="CharacterBody3D"]
+collision_layer = 2
+safe_margin = 0.015
+script = ExtResource("1_1670m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CylinderShape3D_onsno")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_vma38")
+
+[node name="CameraComponent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+script = ExtResource("2_cklkl")
+
+[node name="LeanSensors" type="Node3D" parent="CameraComponent"]
+editor_description = "Container node used to house 3D raycasts, which are then used by CameraComponent's leaning functionality."
+visible = false
+
+[node name="Sensor_Left" type="RayCast3D" parent="CameraComponent/LeanSensors"]
+target_position = Vector3(-0.65, 0, 0)
+
+[node name="Sensor_ForwardLeft" type="RayCast3D" parent="CameraComponent/LeanSensors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
+target_position = Vector3(-0.65, 0, 0)
+
+[node name="Sensor_Right" type="RayCast3D" parent="CameraComponent/LeanSensors"]
+target_position = Vector3(0.65, 0, 0)
+
+[node name="Sensor_ForwardRight" type="RayCast3D" parent="CameraComponent/LeanSensors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
+target_position = Vector3(0.65, 0, 0)
+
+[node name="SmoothingNode" type="Node3D" parent="CameraComponent"]
+editor_description = "Container node used to make camera movement while stepping up or down smoother."
+
+[node name="ControlNode" type="Node3D" parent="CameraComponent/SmoothingNode"]
+
+[node name="PlayerCamera" type="Camera3D" parent="CameraComponent/SmoothingNode/ControlNode" node_paths=PackedStringArray("player_ref")]
+script = ExtResource("3_ivkly")
+player_ref = NodePath("../../../..")
+headbob_curves = Array[Curve]([SubResource("Curve_wmid5"), SubResource("Curve_lnb8x")])
+headbob_frequency = 1.7
+fall_kick_curve = SubResource("Curve_xohdh")
+
+[node name="PlayerStateMachine" type="Node" parent="." node_paths=PackedStringArray("init_state")]
+script = ExtResource("2_necg7")
+init_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("player_camera")]
+script = ExtResource("3_cklkl")
+player_camera = NodePath("../../CameraComponent")
+
+[node name="Moving" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("player_camera")]
+script = ExtResource("4_7cf7v")
+player_camera = NodePath("../../CameraComponent")
+
+[node name="Jumping" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("player_camera")]
+script = ExtResource("6_cklkl")
+player_camera = NodePath("../../CameraComponent")
+
+[node name="Falling" type="Node" parent="PlayerStateMachine"]
+script = ExtResource("7_q1q1h")
+
+[node name="InMenu" type="Node" parent="PlayerStateMachine"]
+script = ExtResource("8_7hsrb")
+
+[node name="AudioPlayers" type="Node" parent="."]
+
+[node name="FootstepPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
+stream = ExtResource("4_wmid5")
+volume_db = -6.0
+
+[connection signal="stance_changed" from="." to="CameraComponent" method="_set_target_position"]
+[connection signal="step_performed" from="." to="CameraComponent" method="_save_cam_pos_for_smoothing"]
+[connection signal="has_landed" from="PlayerStateMachine/Falling" to="CameraComponent/SmoothingNode/ControlNode/PlayerCamera" method="_on_player_landing"]

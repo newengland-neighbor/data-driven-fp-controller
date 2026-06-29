@@ -1,0 +1,85 @@
+[gd_scene load_steps=4 format=3 uid="uid://foylxf51ptq7"]
+
+[ext_resource type="Material" uid="uid://boa2gwlmetlv0" path="res://Materials/test_mat_001.tres" id="2_4le68"]
+[ext_resource type="Material" uid="uid://b21r3o2nmlph2" path="res://Materials/test_mat_002.tres" id="3_edxx1"]
+[ext_resource type="PackedScene" uid="uid://danwmarkn0le2" path="res://Scenes/fps_player_core_composition.tscn" id="4_5ttwe"]
+
+[node name="Root" type="Node3D"]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+collision_mask = 3
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.05, 0)
+use_collision = true
+size = Vector3(50, 16, 50)
+material = ExtResource("2_4le68")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.60112, 1.66235, 18.207)
+use_collision = true
+material = ExtResource("2_4le68")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 5.75, -2)
+use_collision = true
+size = Vector3(3, 0.5, 8)
+material = ExtResource("2_4le68")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.941, 6.25, -2)
+use_collision = true
+size = Vector3(0.118, 1.5, 8)
+material = ExtResource("2_4le68")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 0.973742, -0.227654, 0, 0.227654, 0.973742, -15, 0.326356, -4.42697)
+use_collision = true
+size = Vector3(4, 16.896, 4)
+material = ExtResource("2_4le68")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+operation = 2
+radius = 10.0
+sides = 16
+material = ExtResource("3_edxx1")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+operation = 2
+radius = 9.5
+sides = 16
+material = ExtResource("3_edxx1")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="CSGCombiner3D"]
+transform = Transform3D(-1.74846e-07, 0, -4, 0, 4, 0, 4, 0, -1.74846e-07, -17, 2, -2)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 2, 0)
+material = ExtResource("2_4le68")
+
+[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="CSGCombiner3D"]
+transform = Transform3D(-1.74846e-07, 0, -4, 0, 4, 0, 4, 0, -1.74846e-07, -17, 5, -4.5)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1.5, 0)
+material = ExtResource("2_4le68")
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="CSGCombiner3D"]
+transform = Transform3D(-1.74846e-07, 0, -4, 0, 4, 0, 4, 0, -1.74846e-07, -17, -1, 2)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 2.5, 0)
+material = ExtResource("2_4le68")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.849883, 0.200371, -0.487391, 0, 0.924892, 0.380231, 0.52697, -0.323152, 0.78605, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 12)
+text = "Move: [W,A,S,D]
+Sprint: [Left Shift]
+Jump: [Space]
+Crouch: [C]
+Lean: [Q,E]
+Free Mouse: [Esc]"
+
+[node name="FPSPlayer" parent="." instance=ExtResource("4_5ttwe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.36979, -0.0499978, 13.8116)

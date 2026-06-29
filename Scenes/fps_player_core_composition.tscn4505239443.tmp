@@ -1,0 +1,103 @@
+[gd_scene load_steps=21 format=3 uid="uid://danwmarkn0le2"]
+
+[ext_resource type="Script" uid="uid://cs1qqqyrs4wlm" path="res://Scripts/fps_controller_composition.gd" id="1_nbnu1"]
+[ext_resource type="Script" uid="uid://cirgcrtuofn2t" path="res://Data/Templates/component_core.gd" id="2_7wnmr"]
+[ext_resource type="Script" uid="uid://0kqybksq5kvh" path="res://Data/Components/fp_movement_component.gd" id="3_vnt50"]
+[ext_resource type="Script" uid="uid://b5jhf4mbxwein" path="res://Data/Templates/state.gd" id="4_mqj0x"]
+[ext_resource type="Script" uid="uid://co4s6awjlpgfj" path="res://Data/Player States/fp_movestate_idle.gd" id="5_lwg22"]
+[ext_resource type="Script" uid="uid://cx6dqu7vw7p1c" path="res://Data/Player States/fp_movestate_moving.gd" id="6_gjqxo"]
+[ext_resource type="Script" uid="uid://duexvcdocwfu0" path="res://Data/Player States/fp_movestate_jumping.gd" id="7_5j8tg"]
+[ext_resource type="Script" uid="uid://oypaj0bi02td" path="res://Data/Player States/fp_movestate_falling.gd" id="8_bq0ky"]
+[ext_resource type="Script" uid="uid://bkddv0p8o63pg" path="res://Data/Components/fp_camera_component.gd" id="9_mqj0x"]
+[ext_resource type="Script" uid="uid://o26w0vktrwac" path="res://Data/Components/fp_crouch_component.gd" id="10_lwg22"]
+
+[sub_resource type="Resource" id="Resource_vnt50"]
+script = ExtResource("5_lwg22")
+metadata/_custom_type_script = "uid://co4s6awjlpgfj"
+
+[sub_resource type="Resource" id="Resource_mqj0x"]
+script = ExtResource("6_gjqxo")
+coyote_timer_max = 0.15
+metadata/_custom_type_script = "uid://cx6dqu7vw7p1c"
+
+[sub_resource type="Resource" id="Resource_lwg22"]
+script = ExtResource("7_5j8tg")
+jump_force = 7.5
+metadata/_custom_type_script = "uid://duexvcdocwfu0"
+
+[sub_resource type="Resource" id="Resource_gjqxo"]
+script = ExtResource("8_bq0ky")
+fall_threshold = -7.0
+metadata/_custom_type_script = "uid://oypaj0bi02td"
+
+[sub_resource type="Resource" id="Resource_b8rv0"]
+script = ExtResource("3_vnt50")
+base_move_speed = 3.5
+lerp_speed = 15.0
+max_step_height = 0.25
+states = Array[ExtResource("4_mqj0x")]([SubResource("Resource_vnt50"), SubResource("Resource_mqj0x"), SubResource("Resource_lwg22"), SubResource("Resource_gjqxo")])
+init_state_index = 0
+metadata/_custom_type_script = "uid://0kqybksq5kvh"
+
+[sub_resource type="Resource" id="Resource_5j8tg"]
+script = ExtResource("9_mqj0x")
+max_pitch = 90.0
+min_pitch = -75.0
+mouse_sensitivity = 0.7
+metadata/_custom_type_script = "uid://bkddv0p8o63pg"
+
+[sub_resource type="Resource" id="Resource_bq0ky"]
+script = ExtResource("10_lwg22")
+collider_dimensions = {
+"Crouch": {
+"CamY-Pos": 0.8,
+"Height": 1.0,
+"Y-Position": 0.5
+},
+"Stand": {
+"CamY-Pos": 1.5,
+"Height": 1.7,
+"Y-Position": 0.85
+}
+}
+metadata/_custom_type_script = "uid://o26w0vktrwac"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_onsno"]
+height = 1.7
+radius = 0.25
+
+[sub_resource type="SphereMesh" id="SphereMesh_lwg22"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vma38"]
+radius = 0.25
+
+[node name="FPSPlayer" type="CharacterBody3D"]
+collision_layer = 2
+safe_margin = 0.015
+script = ExtResource("1_nbnu1")
+components = Array[ExtResource("2_7wnmr")]([SubResource("Resource_b8rv0"), SubResource("Resource_5j8tg"), SubResource("Resource_bq0ky")])
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CylinderShape3D_onsno")
+
+[node name="CameraLerpPoint" type="Marker3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+gizmo_extents = 1.65
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CameraLerpPoint"]
+mesh = SubResource("SphereMesh_lwg22")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_vma38")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+top_level = true

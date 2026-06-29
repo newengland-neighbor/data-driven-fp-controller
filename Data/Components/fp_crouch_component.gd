@@ -46,7 +46,7 @@ func handle_stance() -> void:
 		Stances.STANDING: curr_stance = Stances.CROUCHING
 		Stances.CROUCHING: 
 			## If player would collide with the ceiling by standing, exit function.
-			var move_comp : FPMovementComponent = owner.get_component(FPMovementComponent)
+			var move_comp : FPMovementComponent = character_body_ref.get_component(FPMovementComponent)
 			if !move_comp: printerr("Absent FPMovementComponent.")
 			if !move_comp.ceiling_check(0.75): 
 				printerr("Stance change cancelled. Ceiling detected.")

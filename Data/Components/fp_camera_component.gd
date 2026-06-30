@@ -127,15 +127,6 @@ func set_lerp_pt_coord(axis:int,val:float) -> void:
 		_: pass
 
 func override_cam_lerp_vertical(new:Vector3) -> void: 
-	var move_comp : FPMovementComponent = owner.get_component(FPMovementComponent)
-	# We want to clamp new.y so that the camera doesn't lerp too far in one 
-	# direction or the other - it would make for weird movement up steeper 
-	# slopes.
-	new.y = clampf(
-		new.y,
-		owner.to_global(_target_lerp_pos).y - move_comp.max_step_height,
-		owner.to_global(_target_lerp_pos).y + move_comp.max_step_height
-	)
 	lerp_target.global_position.y = new.y
 
 func set_frozen_status(new:bool) -> void: is_frozen = new

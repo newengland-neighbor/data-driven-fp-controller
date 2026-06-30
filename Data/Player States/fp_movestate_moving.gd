@@ -63,4 +63,4 @@ func _in_coyote_time() -> bool: return coyote_timer < coyote_timer_max
 func _move_player() -> void:
 	state_owner.step_up()
 	character_body_ref.move_and_slide()
-	#state_owner.step_down()
+	state_owner.step_down()

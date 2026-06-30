@@ -93,14 +93,6 @@ func step_up() -> void:
 		#printerr("No collision detected.")
 		return
 	
-	# Compare current movement direction to collision normal:
-	# If the dot product of the two is too small, exit function.
-	var collision_normal : Vector3 = test["result_details"].get_collision_normal()
-	var dot := get_desired_direction().dot(-collision_normal)
-	if dot < 0.5: 
-		#printerr("Dot product is too small.")
-		return
-	
 	# Prep for final test.
 	var move_remainder : Vector3 = test["result_details"].get_remainder() + (get_desired_direction() * (0.1 + owner.safe_margin))
 	var pos_w_step_height : Vector3 = Vector3(owner.global_position + (Vector3.UP * max_step_height))
@@ -116,7 +108,7 @@ func step_up() -> void:
 		return
 	
 	# If floor normal exceeds floor_max_angle, exit out of function.
-	collision_normal = test["result_details"].get_collision_normal()
+	var collision_normal = test["result_details"].get_collision_normal()
 	var floor_slope : float = snappedf(collision_normal.angle_to(Vector3.UP), 0.001)
 	if (floor_slope > owner.floor_max_angle): 
 		#printerr("Floor too steep.")

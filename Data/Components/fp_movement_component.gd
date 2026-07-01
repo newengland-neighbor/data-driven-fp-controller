@@ -15,6 +15,9 @@ func bind(new_owner:Node) -> void:
 	super.bind(new_owner)
 	var cam_comp : FPCameraComponent = owner.get_component(FPCameraComponent)
 	if cam_comp: step_performed.connect(cam_comp.override_cam_lerp_vertical)
+	
+	var stat_comp : StatComponent = owner.get_component(StatComponent)
+	if stat_comp: base_move_speed = stat_comp.get_stat_from_block("move_speed")
 
 func get_input() -> Vector2:
 	return Input.get_vector(
@@ -35,7 +38,11 @@ func get_total_speed() -> float:
 	if !is_sprinting(): return base_move_speed
 	else: return base_move_speed * 2.0
 
-func is_sprinting() -> bool: return Input.is_action_pressed("sprint")
+func is_sprinting() -> bool: 
+	return (
+		Input.is_action_pressed("sprint") 
+		and current_state is FPMS_Moving
+		)
 
 func _on_step_requested(direction:int, step_height:float) -> void:
 	var cam_comp : FPCameraComponent = owner.get_component(FPCameraComponent)

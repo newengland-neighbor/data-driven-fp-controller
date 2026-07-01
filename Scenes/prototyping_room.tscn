@@ -1,11 +1,9 @@
-[gd_scene load_steps=31 format=3 uid="uid://foylxf51ptq7"]
+[gd_scene load_steps=28 format=3 uid="uid://foylxf51ptq7"]
 
 [ext_resource type="Material" uid="uid://boa2gwlmetlv0" path="res://Materials/test_mat_001.tres" id="2_4le68"]
 [ext_resource type="Material" uid="uid://b21r3o2nmlph2" path="res://Materials/test_mat_002.tres" id="3_edxx1"]
 [ext_resource type="PackedScene" uid="uid://danwmarkn0le2" path="res://Scenes/fps_player_core_composition.tscn" id="4_5ttwe"]
 [ext_resource type="Script" uid="uid://cirgcrtuofn2t" path="res://Data/Templates/component_core.gd" id="4_kaggg"]
-[ext_resource type="Script" uid="uid://dxxuqv2adxkn2" path="res://Data/Components/stat_component.gd" id="5_nlx51"]
-[ext_resource type="Resource" uid="uid://dyvhilq0nqbn5" path="res://Data/Resources/player.tres" id="6_oi0ok"]
 [ext_resource type="Script" uid="uid://0kqybksq5kvh" path="res://Data/Components/fp_movement_component.gd" id="7_ldqjh"]
 [ext_resource type="Script" uid="uid://b5jhf4mbxwein" path="res://Data/Templates/state.gd" id="8_evvnk"]
 [ext_resource type="Script" uid="uid://co4s6awjlpgfj" path="res://Data/Player States/fp_movestate_idle.gd" id="9_rqnj5"]
@@ -17,11 +15,6 @@
 [ext_resource type="Script" uid="uid://van3cno7f4qd" path="res://Data/Components/fp_cam_effects_component.gd" id="15_pt65e"]
 [ext_resource type="Script" uid="uid://dn7wxu07rvry0" path="res://Data/Components/fp_lean_component.gd" id="16_161u1"]
 [ext_resource type="Script" uid="uid://o26w0vktrwac" path="res://Data/Components/fp_crouch_component.gd" id="17_8wpkh"]
-
-[sub_resource type="Resource" id="Resource_liagt"]
-script = ExtResource("5_nlx51")
-stat_block = ExtResource("6_oi0ok")
-metadata/_custom_type_script = "uid://dxxuqv2adxkn2"
 
 [sub_resource type="Resource" id="Resource_vnt50"]
 script = ExtResource("9_rqnj5")
@@ -221,4 +214,4 @@ Free Mouse: [Esc]"
 
 [node name="FPSPlayer" parent="." instance=ExtResource("4_5ttwe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.36979, -0.0499978, 13.8116)
-components = Array[ExtResource("4_kaggg")]([SubResource("Resource_liagt"), SubResource("Resource_kaggg"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5")])
+components = Array[ExtResource("4_kaggg")]([SubResource("Resource_kaggg"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5")])

@@ -41,7 +41,7 @@ func get_total_speed() -> float:
 func is_sprinting() -> bool: 
 	return (
 		Input.is_action_pressed("sprint") 
-		and current_state is FPMS_Moving
+		and current_state is not FPMS_Idle
 		)
 
 func _on_step_requested(direction:int, step_height:float) -> void:

@@ -33,11 +33,12 @@ script = ExtResource("8_bq0ky")
 fall_threshold = -7.0
 metadata/_custom_type_script = "uid://oypaj0bi02td"
 
-[sub_resource type="Resource" id="Resource_5j8tg"]
+[sub_resource type="Resource" id="Resource_rla38"]
 script = ExtResource("3_vnt50")
 base_move_speed = 3.0
 lerp_speed = 15.0
 max_step_height = 0.25
+min_step_depth = 0.25
 states = Array[ExtResource("4_mqj0x")]([SubResource("Resource_vnt50"), SubResource("Resource_mqj0x"), SubResource("Resource_lwg22"), SubResource("Resource_gjqxo")])
 init_state_index = 0
 metadata/_custom_type_script = "uid://0kqybksq5kvh"
@@ -111,9 +112,8 @@ radius = 0.25
 
 [node name="FPSPlayer" type="CharacterBody3D"]
 collision_layer = 2
-safe_margin = 0.015
 script = ExtResource("1_nbnu1")
-components = Array[ExtResource("2_7wnmr")]([SubResource("Resource_5j8tg"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5")])
+components = Array[ExtResource("2_7wnmr")]([SubResource("Resource_rla38"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true

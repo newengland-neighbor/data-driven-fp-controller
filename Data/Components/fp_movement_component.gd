@@ -95,7 +95,6 @@ func step_up() -> void:
 	var transform_from : Transform3D = Transform3D(Basis.IDENTITY, pos_w_step_height)
 	var collision_normal : Vector3 = -test["result_details"].get_collision_normal()
 	collision_normal.y = roundf(collision_normal.y)
-	print(collision_normal)
 	var test_motion : Vector3 = (
 		collision_normal * min_step_depth
 		if is_zero_approx(collision_normal.y)
@@ -104,9 +103,7 @@ func step_up() -> void:
 	check_params = _create_test_params(transform_from, test_motion)
 	test = _run_test_motion(check_params)
 	# If the test collides with geometry (the step depth is too small), exit function.
-	if test["result"]: 
-		printerr("Step not deep enough")
-		return
+	if test["result"]: return
 	
 	# Ground check test
 	transform_from = transform_from.translated(test_motion)

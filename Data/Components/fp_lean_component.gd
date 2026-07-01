@@ -50,10 +50,8 @@ var curr_lean_rot : float = 0.0
 func _get_lean_direction() -> int:
 	# If the player isn't idle, don't allow a lean.
 	var move_comp : FPMovementComponent = component_owner.get_owner().get_component(FPMovementComponent)
-	if !move_comp or move_comp.current_state.get_index() != FPMoveState.MoveStates.IDLE:
-		return 0
-	# If the player is sprinting, don't allow a lean.
-	if move_comp.is_sprinting(): return 0
+	var state_check : bool = move_comp.current_state.get_index() != FPMoveState.MoveStates.IDLE
+	if !move_comp or state_check: return 0
 	# If the camera is frozen, don't allow a lean.
 	if component_owner.is_frozen: return 0
 	# Otherwise...

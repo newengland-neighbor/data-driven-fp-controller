@@ -45,13 +45,13 @@ func _on_step_requested(direction:int, step_height:float) -> void:
 		-1: (func() -> void:
 			owner.global_position.y += step_height
 			owner.apply_floor_snap()
-			print("Stepping down...")
+			#print("Stepping down...")
 			).call()
 		# Step up
 		1: (func() -> void:
 			owner.velocity.y = 0.0
 			owner.global_position.y += step_height
-			print("Stepping up...")
+			#print("Stepping up...")
 			).call()
 		# Any value whose absolute value isn't 1.
 		_: 

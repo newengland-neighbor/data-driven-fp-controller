@@ -6,6 +6,8 @@ class_name FPMovementComponent extends StateMachineComponent
 @export var lerp_speed : float = 15.0
 ##The maximum value the player can move up (or down) when attempting to move along an uneven surface.
 @export var max_step_height : float = 0.5
+##The minimum depth a step must have for the player to be able to step onto it.
+@export var min_step_depth : float = 0.25
 
 signal step_performed(lerp_target:Vector3)
 
@@ -68,15 +70,12 @@ func step_down() -> void:
 		Vector3.DOWN * (max_step_height + 0.1)
 	)
 	
-	# If the physics test collides with the ground...
+	# If the physics test collides with the ground, execute a downward step.
 	var test : Dictionary = _run_test_motion(check_params)
 	if test["result"]: 
 		var y_translate : float = test["result_details"].get_travel().y
 		_on_step_requested(-1, y_translate)
 
-# Currently, step_up always move player upward by max_step_height.
-# Ideally, we would like to move the player upwards by whatever height
-# is necessary (i.e., min(neccessary_height,max_step_height)).
 func step_up() -> void: 
 	# If player isn't trying to moving, exit function.
 	if get_desired_direction() == Vector3.ZERO: return
@@ -89,30 +88,37 @@ func step_up() -> void:
 	
 	# If the physics tests doesn't collide with anything, exit function.
 	var test : Dictionary = _run_test_motion(check_params)
-	if !test["result"]: 
-		#printerr("No collision detected.")
-		return
+	if !test["result"]: return
 	
-	# Prep for final test.
-	var move_remainder : Vector3 = test["result_details"].get_remainder() + (get_desired_direction() * (0.1 + owner.safe_margin))
+	# Step depth test
 	var pos_w_step_height : Vector3 = Vector3(owner.global_position + (Vector3.UP * max_step_height))
 	var transform_from : Transform3D = Transform3D(Basis.IDENTITY, pos_w_step_height)
-	transform_from = transform_from.translated(move_remainder)
+	var collision_normal : Vector3 = -test["result_details"].get_collision_normal()
+	collision_normal.y = roundf(collision_normal.y)
+	print(collision_normal)
+	var test_motion : Vector3 = (
+		collision_normal * min_step_depth
+		if is_zero_approx(collision_normal.y)
+		else (get_desired_direction() * (0.1 + owner.safe_margin))
+	)
+	check_params = _create_test_params(transform_from, test_motion)
+	test = _run_test_motion(check_params)
+	# If the test collides with geometry (the step depth is too small), exit function.
+	if test["result"]: 
+		printerr("Step not deep enough")
+		return
 	
+	# Ground check test
+	transform_from = transform_from.translated(test_motion)
 	check_params = _create_test_params(transform_from, Vector3.DOWN * max_step_height)
 	test = _run_test_motion(check_params)
-	
-	# If last test doesn't collide with the ground, exit function.
-	if !test["result"]: 
-		#printerr("No ground detected.")
-		return
+	# If the test doesn't collide with the ground, exit function.
+	if !test["result"]: return
 	
 	# If floor normal exceeds floor_max_angle, exit out of function.
-	var collision_normal = test["result_details"].get_collision_normal()
+	collision_normal = test["result_details"].get_collision_normal()
 	var floor_slope : float = snappedf(collision_normal.angle_to(Vector3.UP), 0.001)
-	if (floor_slope > owner.floor_max_angle): 
-		#printerr("Floor too steep.")
-		return
+	if (floor_slope > owner.floor_max_angle): return
 	
 	# Execute step up.
 	var new_y : float = absf(owner.global_position.y - transform_from.origin.y)

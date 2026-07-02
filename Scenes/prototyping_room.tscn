@@ -1,109 +1,32 @@
-[gd_scene load_steps=28 format=3 uid="uid://foylxf51ptq7"]
+[gd_scene load_steps=12 format=3 uid="uid://foylxf51ptq7"]
 
 [ext_resource type="Material" uid="uid://boa2gwlmetlv0" path="res://Materials/test_mat_001.tres" id="2_4le68"]
 [ext_resource type="Material" uid="uid://b21r3o2nmlph2" path="res://Materials/test_mat_002.tres" id="3_edxx1"]
 [ext_resource type="PackedScene" uid="uid://danwmarkn0le2" path="res://Scenes/fps_player_core_composition.tscn" id="4_5ttwe"]
-[ext_resource type="Script" uid="uid://cirgcrtuofn2t" path="res://Data/Templates/component_core.gd" id="4_kaggg"]
-[ext_resource type="Script" uid="uid://0kqybksq5kvh" path="res://Data/Components/fp_movement_component.gd" id="7_ldqjh"]
-[ext_resource type="Script" uid="uid://b5jhf4mbxwein" path="res://Data/Templates/state.gd" id="8_evvnk"]
-[ext_resource type="Script" uid="uid://co4s6awjlpgfj" path="res://Data/Player States/fp_movestate_idle.gd" id="9_rqnj5"]
-[ext_resource type="Script" uid="uid://cx6dqu7vw7p1c" path="res://Data/Player States/fp_movestate_moving.gd" id="10_bro5q"]
-[ext_resource type="Script" uid="uid://duexvcdocwfu0" path="res://Data/Player States/fp_movestate_jumping.gd" id="11_qf1ep"]
-[ext_resource type="Script" uid="uid://oypaj0bi02td" path="res://Data/Player States/fp_movestate_falling.gd" id="12_eu23r"]
-[ext_resource type="Script" uid="uid://bkddv0p8o63pg" path="res://Data/Components/fp_camera_component.gd" id="13_g2fum"]
-[ext_resource type="Script" uid="uid://dk71rkp43ec88" path="res://Data/Templates/subcomponent.gd" id="14_wgqgj"]
-[ext_resource type="Script" uid="uid://van3cno7f4qd" path="res://Data/Components/fp_cam_effects_component.gd" id="15_pt65e"]
-[ext_resource type="Script" uid="uid://dn7wxu07rvry0" path="res://Data/Components/fp_lean_component.gd" id="16_161u1"]
-[ext_resource type="Script" uid="uid://o26w0vktrwac" path="res://Data/Components/fp_crouch_component.gd" id="17_8wpkh"]
+[ext_resource type="Script" uid="uid://brngjwhk2nkaf" path="res://Scripts/interactable.gd" id="4_mgwtw"]
+[ext_resource type="Script" uid="uid://cioo1hx4ft5uk" path="res://Data/Components/interact_component.gd" id="5_5ttwe"]
 
-[sub_resource type="Resource" id="Resource_vnt50"]
-script = ExtResource("9_rqnj5")
-metadata/_custom_type_script = "uid://co4s6awjlpgfj"
+[sub_resource type="Resource" id="Resource_5ttwe"]
+script = ExtResource("5_5ttwe")
+accepted_input_type = 0
+interaction_end_flags = Array[String]([])
+metadata/_custom_type_script = "uid://cioo1hx4ft5uk"
 
-[sub_resource type="Resource" id="Resource_mqj0x"]
-script = ExtResource("10_bro5q")
-coyote_timer_max = 0.15
-metadata/_custom_type_script = "uid://cx6dqu7vw7p1c"
+[sub_resource type="BoxShape3D" id="BoxShape3D_mgwtw"]
 
-[sub_resource type="Resource" id="Resource_lwg22"]
-script = ExtResource("11_qf1ep")
-jump_force = 7.5
-metadata/_custom_type_script = "uid://duexvcdocwfu0"
+[sub_resource type="BoxMesh" id="BoxMesh_edxx1"]
 
-[sub_resource type="Resource" id="Resource_gjqxo"]
-script = ExtResource("12_eu23r")
-fall_threshold = -7.0
-metadata/_custom_type_script = "uid://oypaj0bi02td"
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ttwe"]
+albedo_color = Color(0.371405, 0.373899, 1, 1)
 
-[sub_resource type="Resource" id="Resource_kaggg"]
-script = ExtResource("7_ldqjh")
-base_move_speed = 3.0
-lerp_speed = 15.0
-max_step_height = 0.25
-min_step_depth = 0.25
-states = Array[ExtResource("8_evvnk")]([SubResource("Resource_vnt50"), SubResource("Resource_mqj0x"), SubResource("Resource_lwg22"), SubResource("Resource_gjqxo")])
-init_state_index = 0
-metadata/_custom_type_script = "uid://0kqybksq5kvh"
+[sub_resource type="Resource" id="Resource_3481m"]
+script = ExtResource("5_5ttwe")
+accepted_input_type = 1
+interaction_end_flags = Array[String]([])
+metadata/_custom_type_script = "uid://cioo1hx4ft5uk"
 
-[sub_resource type="Curve" id="Curve_bq0ky"]
-_limits = [0.0, 1.0, 0.0, 0.5]
-_data = [Vector2(0, 1), 0.0, -6.08696, 0, 0, Vector2(0.5, 0), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_bk70o"]
-_limits = [-1.0, 1.0, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 5.41837, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0), -6.19642, -6.19642, 0, 0, Vector2(0.75, -1), 0.0, 0.0, 0, 0, Vector2(1, 0), 6.20357, 0.0, 0, 0]
-point_count = 5
-
-[sub_resource type="Curve" id="Curve_74mk5"]
-_limits = [-1.0, 1.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.25, 0), -6.0, -6.0, 0, 0, Vector2(0.5, -1), 0.0, 0.0, 0, 0, Vector2(0.75, 0), 6.0, 6.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 5
-
-[sub_resource type="Resource" id="Resource_g267i"]
-script = ExtResource("15_pt65e")
-enable_tilt = true
-tilt_amnt = 0.2
-tilt_intensity = 0.5
-enable_headbob = true
-headbob_curves = Array[Curve]([SubResource("Curve_bk70o"), SubResource("Curve_74mk5")])
-headbob_intensity = 0.5
-headbob_frequency = 4.0
-headbob_amount = 0.04
-fall_kick_curve = SubResource("Curve_bq0ky")
-max_fall_time = 0.5
-metadata/_custom_type_script = "uid://van3cno7f4qd"
-
-[sub_resource type="Resource" id="Resource_bk70o"]
-script = ExtResource("16_161u1")
-lean_amnt_pos = 0.5
-lean_amnt_angle = 10.0
-metadata/_custom_type_script = "uid://dn7wxu07rvry0"
-
-[sub_resource type="Resource" id="Resource_bq0ky"]
-script = ExtResource("13_g2fum")
-max_pitch = 90.0
-min_pitch = -75.0
-cam_lerp_speed = 5.0
-mouse_sensitivity = 0.7
-subcomponents = Array[ExtResource("14_wgqgj")]([SubResource("Resource_g267i"), SubResource("Resource_bk70o")])
-metadata/_custom_type_script = "uid://bkddv0p8o63pg"
-
-[sub_resource type="Resource" id="Resource_74mk5"]
-script = ExtResource("17_8wpkh")
-collider_dimensions = {
-"Crouch": {
-"CamY-Pos": 0.8,
-"Height": 1.0,
-"Y-Position": 0.5
-},
-"Stand": {
-"CamY-Pos": 1.5,
-"Height": 1.7,
-"Y-Position": 0.85
-}
-}
-metadata/_custom_type_script = "uid://o26w0vktrwac"
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3481m"]
+albedo_color = Color(0.850328, 0.283036, 0, 1)
 
 [node name="Root" type="Node3D"]
 
@@ -214,4 +137,31 @@ Free Mouse: [Esc]"
 
 [node name="FPSPlayer" parent="." instance=ExtResource("4_5ttwe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.36979, -0.0499978, 13.8116)
-components = Array[ExtResource("4_kaggg")]([SubResource("Resource_kaggg"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5")])
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 15)
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("4_mgwtw")
+interact_component = SubResource("Resource_5ttwe")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_mgwtw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_edxx1")
+surface_material_override/0 = SubResource("StandardMaterial3D_5ttwe")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 13)
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("4_mgwtw")
+interact_component = SubResource("Resource_3481m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_mgwtw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("BoxMesh_edxx1")
+surface_material_override/0 = SubResource("StandardMaterial3D_3481m")

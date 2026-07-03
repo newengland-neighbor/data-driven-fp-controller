@@ -1,7 +1,7 @@
 class_name InteractRayComponent extends ComponentCore
 
 @export var ray_range : float = 2.5
-@export_flags_3d_physics var collision_mask : int
+@export_flags_3d_physics var collision_mask : int = 1
 
 var raycast_ref : RayCast3D
 var camera_ref : FPCameraComponent
@@ -9,7 +9,6 @@ var camera_ref : FPCameraComponent
 var current_interactable : Interactable = null
 
 signal request_node(new:Node)
-signal send_input_type(val:int)
 
 func bind(new_owner:Node) -> void:
 	super.bind(new_owner)
@@ -31,7 +30,7 @@ var input_type : int = 0:
 	set(new):
 		if new == prev_type: return 
 		prev_type = new
-		_prep_input_request(new)
+		_prep_interact_request(new)
 
 var register_hold : bool = false
 var input_event_completed : bool = false
@@ -62,24 +61,22 @@ func _get_potential_interactable() -> Variant:
 		return col
 	return null
 
-func _prep_input_request(in_type:int) -> void:
+func _prep_interact_request(in_type:int) -> void:
 	var pot_int_ref : Variant = _get_potential_interactable()
 	if pot_int_ref is not Interactable: 
 		printerr("Error: No potential interactable found.")
+		return
+	
+	var interactcomp : InteractComponent = (pot_int_ref as Interactable).get_interact_comp()
+	if interactcomp.accepted_input_type != in_type: 
+		printerr("Error: Wrong input type")
 		return
 	
 	if pot_int_ref == current_interactable:
 		printerr("Error: Trying to connect to an already-connected instance.")
 		return
 	
-	var interactcomp : InteractComponent = (pot_int_ref as Interactable).get_interact_comp()
-	
-	if interactcomp.accepted_input_type != in_type: 
-		printerr("Error: Wrong input type")
-		return
-	
-	send_input_type.connect(interactcomp._on_interact_request_received, ConnectFlags.CONNECT_ONE_SHOT)
-	send_input_type.emit(in_type)
+	print("Interacting...")
 	current_interactable = pot_int_ref
 	interactcomp.end_interaction.connect(_clear_curr_interactable, ConnectFlags.CONNECT_ONE_SHOT)
 	pot_int_ref.set_interact_status(true)

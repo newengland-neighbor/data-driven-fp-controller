@@ -27,19 +27,10 @@ func physics_update(_delta:float) -> void:
 func handle_input(_event:InputEvent) -> void: 
 	if owner.get_interact_status(): _interact_handle_input(_event)
 
-func _on_interact_request_received(input_type:int) -> void:
-	if input_type != accepted_input_type: 
-		printerr("Error: Interaction request made does not match accepted input type.")
-		return
-	print("Interacting...")
-
 func _interact_begin() -> void: pass
 func _interact_update(_delta:float) -> void: pass
 func _interact_physics_update(_delta:float) -> void: pass
-
 func _interact_handle_input(_event:InputEvent) -> void: 
 	if _event.is_action_released("interact"):
 		_interact_end()
-
-func _interact_end() -> void: 
-	end_interaction.emit()
+func _interact_end() -> void: end_interaction.emit()

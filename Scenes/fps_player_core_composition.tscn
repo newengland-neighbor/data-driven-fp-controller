@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://danwmarkn0le2"]
+[gd_scene load_steps=30 format=3 uid="uid://danwmarkn0le2"]
 
 [ext_resource type="Script" uid="uid://cs1qqqyrs4wlm" path="res://Scripts/fps_controller_composition.gd" id="1_nbnu1"]
 [ext_resource type="Script" uid="uid://cirgcrtuofn2t" path="res://Data/Templates/component_core.gd" id="2_7wnmr"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://o26w0vktrwac" path="res://Data/Components/fp_crouch_component.gd" id="10_lwg22"]
 [ext_resource type="Script" uid="uid://dn7wxu07rvry0" path="res://Data/Components/fp_lean_component.gd" id="11_5j8tg"]
 [ext_resource type="Script" uid="uid://van3cno7f4qd" path="res://Data/Components/fp_cam_effects_component.gd" id="12_bq0ky"]
+[ext_resource type="Script" uid="uid://o8ntpsufst0" path="res://Data/Components/interact_ray_component.gd" id="14_bk70o"]
 
 [sub_resource type="Resource" id="Resource_vnt50"]
 script = ExtResource("5_lwg22")
@@ -103,6 +104,12 @@ collider_dimensions = {
 }
 metadata/_custom_type_script = "uid://o26w0vktrwac"
 
+[sub_resource type="Resource" id="Resource_b8rv0"]
+script = ExtResource("14_bk70o")
+ray_range = 2.5
+collision_mask = 5
+metadata/_custom_type_script = "uid://o8ntpsufst0"
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_onsno"]
 height = 1.7
 radius = 0.25
@@ -113,7 +120,7 @@ radius = 0.25
 [node name="FPSPlayer" type="CharacterBody3D"]
 collision_layer = 2
 script = ExtResource("1_nbnu1")
-components = Array[ExtResource("2_7wnmr")]([SubResource("Resource_rla38"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5")])
+components = Array[ExtResource("2_7wnmr")]([SubResource("Resource_rla38"), SubResource("Resource_bq0ky"), SubResource("Resource_74mk5"), SubResource("Resource_b8rv0")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true

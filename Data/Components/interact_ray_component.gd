@@ -36,14 +36,19 @@ var register_hold : bool = false
 var input_event_completed : bool = false
 func update(_delta:float) -> void: 
 	if Input.is_action_just_released("interact"):
+		if current_interactable: 
+			current_interactable.interact_end()
+			_clear_curr_interactable()
 		register_hold = false
 		input_event_completed = false
 	
 	if input_event_completed: return
+	
 	if Input.is_action_pressed("interact") and register_hold:
 		input_type = 1
 		input_event_completed = true
 		return
+	
 	elif Input.is_action_just_pressed("interact"):
 		register_hold = true
 		input_event_completed = false
@@ -54,21 +59,19 @@ func physics_update(_delta:float) -> void:
 	raycast_ref.global_position = camera_ref.get_camera_node().global_position
 	raycast_ref.global_rotation = camera_ref.get_camera_node().global_rotation
 
-func _get_potential_interactable() -> Variant:
+func _get_potential_interactable() -> Interactable:
 	if !raycast_ref: return null
-	if raycast_ref.is_colliding():
-		var col : Object = raycast_ref.get_collider()
-		return col
-	return null
+	var col : Interactable = (raycast_ref.get_collider() as Interactable)
+	if !col: return null
+	return col
 
 func _prep_interact_request(in_type:int) -> void:
-	var pot_int_ref : Variant = _get_potential_interactable()
-	if pot_int_ref is not Interactable: 
+	var pot_int_ref : Interactable = _get_potential_interactable()
+	if !pot_int_ref: 
 		printerr("Error: No potential interactable found.")
 		return
 	
-	var interactcomp : InteractComponent = (pot_int_ref as Interactable).get_interact_comp()
-	if interactcomp.accepted_input_type != in_type: 
+	if pot_int_ref.accepted_input_type != in_type: 
 		printerr("Error: Wrong input type")
 		return
 	
@@ -77,9 +80,8 @@ func _prep_interact_request(in_type:int) -> void:
 		return
 	
 	print("Interacting...")
+	pot_int_ref.interact_begin()
 	current_interactable = pot_int_ref
-	interactcomp.end_interaction.connect(_clear_curr_interactable, ConnectFlags.CONNECT_ONE_SHOT)
-	pot_int_ref.set_interact_status(true)
 
 func _signal_test(val:int) -> void:
 	var translate_to_string : Callable = (
@@ -93,4 +95,4 @@ func _signal_test(val:int) -> void:
 
 func _clear_curr_interactable() -> void:
 	current_interactable = null
-	print(current_interactable)
+	#print(current_interactable)

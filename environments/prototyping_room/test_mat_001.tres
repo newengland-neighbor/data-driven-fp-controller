@@ -1,8 +1,0 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://boa2gwlmetlv0"]
-
-[ext_resource type="Texture2D" uid="uid://pdukfyldum18" path="res://environments/prototyping_room/texture_05.png" id="1_itxob"]
-
-[resource]
-albedo_texture = ExtResource("1_itxob")
-metallic_specular = 0.0
-uv1_triplanar = true

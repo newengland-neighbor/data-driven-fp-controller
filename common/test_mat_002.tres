@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://b21r3o2nmlph2"]
+
+[ext_resource type="Texture2D" uid="uid://pdukfyldum18" path="res://common/texture_05.png" id="1_qxq4q"]
+
+[resource]
+albedo_color = Color(0.519474, 1, 0.816698, 1)
+albedo_texture = ExtResource("1_qxq4q")
+metallic_specular = 0.35
+uv1_triplanar = true

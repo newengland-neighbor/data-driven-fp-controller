@@ -1,0 +1,32 @@
+class_name FPSprintComponent extends ComponentCore
+
+@export_range(1.0, 2.0, 0.05) var speed_modifier : float = 2.0
+
+var character_body_ref : FPController
+signal send_move_speed_mod(key:String,val:float,remove:bool)
+
+func bind(new_owner:Node) -> void:
+	if new_owner is not FPController:
+		printerr("FPCrouchComponent requires owner to be of type FPController")
+		return
+	
+	super.bind(new_owner)
+	character_body_ref = get_owner()
+	send_move_speed_mod.connect(character_body_ref._on_modifier_received)
+
+# We want to continuously check if the sprint key is behind held.
+# Therefore the logic is in process() over unhandled_input() like usual.
+func update(_delta:float) -> void:
+	if !character_body_ref: return
+	if Input.is_action_just_released("sprint"):
+		if !character_body_ref.has_modifier("sprint"): return
+		send_move_speed_mod.emit("sprint",true,speed_modifier)
+		return
+	
+	if Input.is_action_pressed("sprint"):
+		var check : bool = (
+			character_body_ref.has_modifier("crouch")
+			or character_body_ref.has_modifier("sprint")
+		)
+		if check: return
+		send_move_speed_mod.emit("sprint",false,speed_modifier)

@@ -24,10 +24,11 @@ func handle_input(_event:InputEvent) -> void: pass
 func update(_delta:float) -> void: pass
 
 func physics_update(_delta:float) -> void:
-	direction = lerp(
+	direction = MathPlus.v3_exp_decay(
 		direction,
 		character_body_ref.get_desired_direction(),
-		_delta * character_body_ref.lerp_speed
+		MathPlus.DECAY,
+		_delta
 		)
 	
 	if direction:

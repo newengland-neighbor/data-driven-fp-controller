@@ -33,10 +33,11 @@ func physics_update(_delta:float) -> void:
 	
 	var was_on_floor : bool = character_body_ref.is_on_floor()
 	
-	direction = lerp(
+	direction = MathPlus.v3_exp_decay(
 		direction,
 		character_body_ref.get_desired_direction(),
-		_delta * character_body_ref.lerp_speed
+		MathPlus.DECAY,
+		_delta
 		)
 	
 	if direction:

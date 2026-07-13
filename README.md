@@ -6,15 +6,19 @@ This project consists of a basic, resource-driven implementation of a first-pers
 
 The first-person player controller comes with the following features:
 
-- A state machine-driven movement component. Additional movement states can be added by creating resource-scripts inheriting from the FPMoveState class. Comes with the following states pre-built: idle, moving, jumping, falling.
+- State machine-driven movement. Additional movement states can be added by creating resource-scripts inheriting from the FPMoveState class. Comes with the following states pre-built: OnGround, InAir, and Frozen. 
   
-- A first-person camera component. Spawns a Camera3D node, and a target node which the camera linearly interpolates its position to match. Both are set to be children of the player node, though the camera node itself is decoupled from the player's position. This is done to allow for smooth, yet responsive, camera movement. This component's behavior can be further modified through the use of subcomponents inheriting from the Subcomponent resource class. The camera component comes with the following subcomponents:
+- A smooth first-person camera. The camera node is designed to smoothly (and quickly) move towards a target position, which is by default where the player's "head" should be.
 
-  - A camera movement effect component. Creates a Vector3 containing calculated values for head-bobbing, fall-kicking, and movement-based camera tilting effects - the intensity of which can be modified. This vector is then passed to the parent camera component via signal, which is then saved as a modifier applied to the lerp target and the camera's rotation.
+This player controller is built with behavior-altering, resource-based components in mind. This allows for scalable customization of player movement behavior. The following components are included:
+
+  - A camera movement effect component. Creates a Vector3 containing calculated values for head-bobbing, fall-kicking, and movement-based camera tilting effects - the intensity of which can be modified. This vector is then passed to the parent camera via signal, which is then saved as a modifier applied to the camera target's position and the camera's rotation.
  
-  - A camera lean component. Allows the player to move the camera lerp target along its x-axis. Combined with a directional camera-rotation effect, this allows the player to peak around corners. These changes are sent to the parent camera component as modifiers to the lerp target's position and the camera's rotation.
+  - A camera lean component. Allows the player to move the camera lerp target along its x-axis. Combined with a directional camera-rotation effect, this allows the player to peak around corners. These changes are sent to the parent camera as modifiers to the target's position and the camera's rotation.
 
-- A crouch component. This allows the player to enter various "stance states", which dynamically alter their collision shape and the position of the camera's lerp target. The component sends its data to its owner via signal, which then modifies the player's collision dimensions as requested.
+- A crouch component. This allows the player to enter various "stance states", which dynamically alter their collision shape and the position of the camera's lerp target. The component sends its data to the player's main movement script via signal, which then modifies the player's collision dimensions and movement speed via as requested.
+
+- A sprint component. This allows the player to move at a faster speed. This effect is cancelled out by the crouch component whenever the player is considered to be crouching.
 
 If any of the default player controller components don't suit a project, they can be removed with no resulting functionality issues. The component system designed for this project is made with easy integration and removal of components in mind. If any components do need to communicate with each other, it is done through the use of signals to enforce clean design structure.
 
@@ -26,5 +30,6 @@ The following actions are executed with the following controls:
 - Jumping: Space
 - Crouching: C
 - Leaning: Q, E
+- Free Camera: Escape
 
-The control scheme for all but the camera's mouse-driven movement can be modified in the Godot Editor in: Project Settings &rarr; Input Map
+The control scheme (save for the camera's mouse-driven movement and the escape key) can be modified in the Godot Editor in: Project Settings &rarr; Input Map

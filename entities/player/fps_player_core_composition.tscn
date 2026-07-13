@@ -1,11 +1,9 @@
-[gd_scene load_steps=26 format=3 uid="uid://danwmarkn0le2"]
+[gd_scene load_steps=22 format=3 uid="uid://danwmarkn0le2"]
 
 [ext_resource type="Script" uid="uid://cs1qqqyrs4wlm" path="res://entities/player/fp_controller.gd" id="1_nbnu1"]
+[ext_resource type="Script" uid="uid://cxgy25qiubaab" path="res://entities/player/states/fp_on_ground.gd" id="4_ghjgy"]
 [ext_resource type="Script" uid="uid://b5jhf4mbxwein" path="res://common/state.gd" id="4_mqj0x"]
-[ext_resource type="Script" uid="uid://co4s6awjlpgfj" path="res://entities/player/states/fp_movestate_idle.gd" id="5_lwg22"]
-[ext_resource type="Script" uid="uid://cx6dqu7vw7p1c" path="res://entities/player/states/fp_movestate_moving.gd" id="6_gjqxo"]
-[ext_resource type="Script" uid="uid://duexvcdocwfu0" path="res://entities/player/states/fp_movestate_jumping.gd" id="7_5j8tg"]
-[ext_resource type="Script" uid="uid://oypaj0bi02td" path="res://entities/player/states/fp_movestate_falling.gd" id="8_bq0ky"]
+[ext_resource type="Script" uid="uid://kdx6fwn5y461" path="res://entities/player/states/fp_in_air.gd" id="5_poec7"]
 [ext_resource type="Script" uid="uid://cirgcrtuofn2t" path="res://common/component_core.gd" id="8_poec7"]
 [ext_resource type="Script" uid="uid://bfe8rrn5maust" path="res://entities/player/fp_camera.gd" id="8_xqmfj"]
 [ext_resource type="Script" uid="uid://o26w0vktrwac" path="res://entities/player/components/fp_crouch_component.gd" id="9_6imgx"]
@@ -13,28 +11,20 @@
 [ext_resource type="Script" uid="uid://van3cno7f4qd" path="res://entities/player/components/fp_cam_effects_component.gd" id="12_yjan8"]
 [ext_resource type="Script" uid="uid://wd4tciyn6u0y" path="res://common/state_machine_component.gd" id="14_8yutd"]
 
-[sub_resource type="Resource" id="Resource_1a1gv"]
-script = ExtResource("5_lwg22")
-metadata/_custom_type_script = "uid://co4s6awjlpgfj"
-
-[sub_resource type="Resource" id="Resource_wsjmy"]
-script = ExtResource("6_gjqxo")
+[sub_resource type="Resource" id="Resource_6imgx"]
+script = ExtResource("4_ghjgy")
 coyote_timer_max = 0.15
-metadata/_custom_type_script = "uid://cx6dqu7vw7p1c"
+metadata/_custom_type_script = "uid://cxgy25qiubaab"
 
-[sub_resource type="Resource" id="Resource_6i2yp"]
-script = ExtResource("7_5j8tg")
+[sub_resource type="Resource" id="Resource_8yutd"]
+script = ExtResource("5_poec7")
 jump_force = 7.5
-metadata/_custom_type_script = "uid://duexvcdocwfu0"
-
-[sub_resource type="Resource" id="Resource_khv42"]
-script = ExtResource("8_bq0ky")
 fall_threshold = -7.0
-metadata/_custom_type_script = "uid://oypaj0bi02td"
+metadata/_custom_type_script = "uid://kdx6fwn5y461"
 
 [sub_resource type="Resource" id="Resource_q4kx1"]
 script = ExtResource("14_8yutd")
-states = Array[ExtResource("4_mqj0x")]([SubResource("Resource_1a1gv"), SubResource("Resource_wsjmy"), SubResource("Resource_6i2yp"), SubResource("Resource_khv42")])
+states = Array[ExtResource("4_mqj0x")]([SubResource("Resource_6imgx"), SubResource("Resource_8yutd")])
 init_state_index = 0
 metadata/_custom_type_script = "uid://wd4tciyn6u0y"
 
@@ -72,8 +62,8 @@ radial_segments = 16
 rings = 0
 
 [sub_resource type="Curve" id="Curve_yjan8"]
-_limits = [0.0, 1.0, 0.0, 0.3]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.3, 0), -10.549, 0.0, 0, 0]
+_limits = [0.0, 1.0, 0.0, 0.5]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0), -0.635718, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_g0rj4"]
@@ -94,11 +84,12 @@ tilt_intensity = 0.5
 enable_headbob = true
 headbob_curves = Array[Curve]([SubResource("Curve_g0rj4"), SubResource("Curve_8yutd")])
 speed_gate = 0.0
-headbob_intensity = 0.4
+headbob_intensity = 0.5
 headbob_frequency = 4.0
 headbob_amount = 0.04
+fallkick_intensity = 1.5
 fall_kick_curve = SubResource("Curve_yjan8")
-max_fall_time = 0.3
+max_fall_time = 0.5
 metadata/_custom_type_script = "uid://van3cno7f4qd"
 
 [node name="FPSPlayer" type="CharacterBody3D"]

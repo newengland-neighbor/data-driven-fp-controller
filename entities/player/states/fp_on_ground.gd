@@ -1,4 +1,4 @@
-class_name FPMS_Moving extends FPMoveState
+class_name FPMS_OnGround extends FPMoveState
 
 ##The maximum time (in seconds) that the player's coyote time should last after leaving the ground.
 @export var coyote_timer_max : float = 0.15
@@ -19,50 +19,53 @@ func enter(_prev_state:int,_data:={}) -> void:
 	else: direction = Vector3.ZERO
 	coyote_timer = 0.0
 
-func handle_input(_event:InputEvent) -> void: 
-	if _event.is_action_pressed("jump"):
+func handle_input(_event:InputEvent) -> void:
+	if _event .is_action_pressed("jump"):
 		if !character_body_ref.ceiling_check(0.5): return
-		finished.emit(MoveStates.JUMPING, {"prev_velocity":direction})
+		finished.emit(MoveStates.IN_AIR, {
+			"prev_velocity":direction,
+			"has_jumped":true
+			})
 
 func update(_delta:float) -> void: pass
 
 func physics_update(_delta:float) -> void: 
-	if character_body_ref.get_input() == Vector2.ZERO: 
-		finished.emit(MoveStates.IDLE)
-		return
-	
 	var was_on_floor : bool = character_body_ref.is_on_floor()
 	
-	direction = lerp(
+	var target_vector : Vector3 = (
+		character_body_ref.get_desired_direction()
+		if character_body_ref.get_input() != Vector2.ZERO
+		else Vector3.ZERO
+	)
+	
+	direction = MathPlus.v3_exp_decay(
 		direction,
-		character_body_ref.get_desired_direction(),
-		_delta * character_body_ref.lerp_speed
+		target_vector,
+		MathPlus.DECAY,
+		_delta
 		)
 	
-	if direction:
-		character_body_ref.velocity.x = direction.x * character_body_ref.get_total_speed()
-		character_body_ref.velocity.z = direction.z * character_body_ref.get_total_speed()
-		#character_body_ref.velocity.y = 1.0
-	
+	character_body_ref.velocity = direction * character_body_ref.get_total_speed()
 	_move_player()
 	
 	if !character_body_ref.is_on_floor():
 		coyote_timer += _delta
 		if was_on_floor: 
 			character_body_ref.apply_floor_snap()
-			#state_owner.step_down()
 			coyote_timer = 0.0
 			return
 		# If coyote_timer has reached max, transition to FALLING state.
 		if !_in_coyote_time(): 
-			finished.emit(MoveStates.FALLING,{"prev_velocity":direction})
+			finished.emit(MoveStates.IN_AIR,{
+				"prev_velocity":direction,
+				"has_jumped":false
+				})
 
 func exit() -> void: pass
 
 func _in_coyote_time() -> bool: return coyote_timer < coyote_timer_max
 
 func _move_player() -> void:
-	#character_body_ref.handle_ground_hover(delta)
 	character_body_ref.step_up()
 	character_body_ref.move_and_slide()
 	character_body_ref.step_down()

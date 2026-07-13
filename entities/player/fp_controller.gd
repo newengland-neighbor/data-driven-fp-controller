@@ -105,7 +105,7 @@ func get_input() -> Vector2:
 		"move_forward", "move_backwards"
 		)
 
-func get_basis_from_euler(euler:Vector3, flat_vec:Vector3 = Vector3(1.0, 1.0, 1.0)) -> Basis:
+func get_basis_from_euler(euler:Vector3, flat_vec:Vector3 = Vector3.ONE) -> Basis:
 	return Basis.from_euler(euler * flat_vec)
 
 # Since the CameraTarget node is what's *actually* affected by mouse movement input,
@@ -125,6 +125,8 @@ func get_total_speed() -> float:
 	for m in move_speed_mods:
 		mod_avg += move_speed_mods[m]
 	return base_move_speed * mod_avg
+
+func get_cam_ref() -> Camera3D: return %PlayerCamera
 
 # Step-Climbing functions
 func _on_step_requested(direction:int, step_height:float) -> void:

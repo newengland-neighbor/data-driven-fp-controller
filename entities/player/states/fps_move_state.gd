@@ -1,10 +1,8 @@
 class_name FPMoveState extends StateResource
 
 enum MoveStates {
-	IDLE,
-	MOVING,
-	JUMPING,
-	FALLING,
+	ON_GROUND,
+	IN_AIR,
 	FROZEN
 }
 

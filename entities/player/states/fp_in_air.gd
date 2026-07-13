@@ -1,13 +1,18 @@
-class_name FPMS_Falling extends FPMoveState
+class_name FPMS_InAir extends FPMoveState
 
+##The strength of the player's jump. Higher values => higher jumps.
+@export var jump_force : float = 7.5
 ##The amount of downward velocity needed for a landing signal-emission.
 @export var fall_threshold : float = -7.0
 
-var direction : Vector3 = Vector3.ZERO
-var prev_state : int = -1
 var character_body_ref : FPController
 
+var direction : Vector3 = Vector3.ZERO
+var jumped : bool:
+	set(new): if new == true: has_jumped.emit()
+
 signal has_landed(fall_velocity:float,fall_threshold:float)
+signal has_jumped
 
 func bind(new:ComponentCore,indx:int) -> void:
 	super.bind(new,indx)
@@ -16,18 +21,21 @@ func bind(new:ComponentCore,indx:int) -> void:
 func enter(_prev_state:int,_data:={}) -> void: 
 	if !_data.is_empty():
 		var prev_velocity = _data["prev_velocity"]
-		prev_state = _prev_state
-		direction = Vector3(prev_velocity.x,direction.y,prev_velocity.z)
+		direction = prev_velocity * Vector3(1.0, 0.0, 1.0)
+		if _prev_state != MoveStates.FROZEN and _data["has_jumped"]: 
+			character_body_ref.velocity.y = jump_force
+			jumped = _data["has_jumped"]
 	else: direction = Vector3.ZERO
 
 func handle_input(_event:InputEvent) -> void: pass
 func update(_delta:float) -> void: pass
 
 func physics_update(_delta:float) -> void:
-	direction = lerp(
+	direction = MathPlus.v3_exp_decay(
 		direction,
 		character_body_ref.get_desired_direction(),
-		_delta * character_body_ref.lerp_speed
+		MathPlus.DECAY,
+		_delta
 		)
 	
 	if direction:
@@ -40,16 +48,13 @@ func physics_update(_delta:float) -> void:
 	
 	var emit_landing : bool = (
 		downward_velocity <= fall_threshold
-		or prev_state == MoveStates.JUMPING
+		or jumped
 		)
 	
 	if character_body_ref.is_on_floor(): 
 		if emit_landing:
 			print("fall threshold breached!")
 			has_landed.emit(downward_velocity,fall_threshold)
-		
-		if character_body_ref.get_desired_direction(): 
-			finished.emit(MoveStates.MOVING,{"prev_velocity":direction})
-		else: finished.emit(MoveStates.IDLE)
+		finished.emit(MoveStates.ON_GROUND,{"prev_velocity":direction})
 
 func exit() -> void: pass

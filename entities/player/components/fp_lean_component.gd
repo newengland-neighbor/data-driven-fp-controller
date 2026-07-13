@@ -7,6 +7,9 @@ class_name FPLeanComponent extends ComponentCore
 ##when a lean is performed.
 @export var lean_amnt_angle : float = 10.0
 
+var curr_lean_pos : float = 0.0
+var curr_lean_rot : float = 0.0
+
 var lean_sensor : ShapeCast3D = null
 var character_body_ref : FPController = null
 
@@ -48,17 +51,16 @@ func physics_update(_delta:float) -> void:
 	lean_sensor.rotation.y = get_owner().get_lerp_target().rotation.y
 	_handle_lean(_delta)
 
-##############
-# Lean Methods
-##############
-var curr_lean_pos : float = 0.0
-var curr_lean_rot : float = 0.0
 func _get_lean_direction() -> int:
-	# If the player isn't idle, don't allow a lean.
-	var state_check : bool = character_body_ref.state_machine.current_state is not FPMS_Idle
-	if !character_body_ref or state_check: return 0
+	# If the player isn't trying to move, don't allow a lean.
+	if (!character_body_ref 
+	or !character_body_ref.get_input() == Vector2.ZERO 
+	or !character_body_ref.is_on_floor()): 
+		return 0
+	
 	# If the camera is frozen, don't allow a lean.
 	if get_owner().is_frozen: return 0
+	
 	# Otherwise...
 	return int(Input.get_action_strength("lean_right") - Input.get_action_strength("lean_left"))
 

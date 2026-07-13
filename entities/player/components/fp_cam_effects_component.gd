@@ -15,8 +15,9 @@ var step_timer : float = 0.0
 var sway_timer : float = 0.0
 signal request_step_sound
 
+@export_range(1.0, 3.0, 0.5) var fallkick_intensity : float = 1.5
 @export var fall_kick_curve : Curve
-@export var max_fall_time : float = 0.3
+@export var max_fall_time : float = 0.5
 var fall_timer : float = 0.0
 
 var player_ref : FPController = null
@@ -31,8 +32,8 @@ func bind(new_owner:Node) -> void:
 	
 	player_ref = new_owner.get_owner()
 	if player_ref: 
-		var fall_state : FPMS_Falling = player_ref.state_machine.get_state(FPMS_Falling)
-		if fall_state: fall_state.has_landed.connect(_on_landing_received)
+		var air_state : FPMS_InAir = player_ref.state_machine.get_state(FPMS_InAir)
+		if air_state: air_state.has_landed.connect(_on_landing_received)
 	
 	send_modifiers.connect(new_owner._on_cam_modifier_received)
 	request_step_sound.connect(_footstep_test)
@@ -63,11 +64,8 @@ func physics_update(_delta:float) -> void:
 func get_tilt_rot() -> Vector3:
 	if !enable_tilt: return Vector3.ZERO
 	
-	var curr_move_state_check : bool = player_ref.state_machine.current_state is not FPMS_Idle
-	if !curr_move_state_check: return Vector3.ZERO
-	
 	var tilt_values : Vector2 = Vector2.ZERO
-	var v : Vector3 = player_ref.get_real_velocity() if curr_move_state_check else Vector3.ZERO
+	var v : Vector3 = player_ref.get_real_velocity() #if curr_move_state_check else Vector3.ZERO
 	var speed : float = snappedf(Vector2(v.x, v.z).length(), 0.01)
 	if speed > speed_gate and player_ref.is_on_floor():
 		var dots : Vector2 = Vector2(
@@ -79,7 +77,7 @@ func get_tilt_rot() -> Vector3:
 	else: tilt_values = Vector2.ZERO
 	return Vector3(tilt_values.x, 0.0, tilt_values.y)
 
-var fall_kick_intensity : float = 0.0
+var scaled_kick_strength : float = 0.0
 func _on_landing_received(val:float,threshold:float) -> void:
 	fall_timer = 0.0
 	var a : float = clampf(
@@ -87,7 +85,7 @@ func _on_landing_received(val:float,threshold:float) -> void:
 		1.0,
 		3.0
 	)
-	fall_kick_intensity = snappedf(a,0.1)
+	scaled_kick_strength = snappedf(a,0.1)
 
 func get_fallkick_vector(_delta:float) -> Array[Vector3]:
 	if !fall_kick_curve: return [Vector3.ZERO, Vector3.ZERO]
@@ -95,7 +93,7 @@ func get_fallkick_vector(_delta:float) -> Array[Vector3]:
 	if fall_timer < max_fall_time: fall_timer += _delta
 	return [
 		Vector3(0.0, -fall_kick_curve.sample_baked(fall_timer) * 0.1, 0.0),
-		Vector3(-deg_to_rad((fall_kick_curve.sample_baked(fall_timer) * 2.5) * fall_kick_intensity), 0.0, 0.0)
+		Vector3(-deg_to_rad((fall_kick_curve.sample_baked(fall_timer) * fallkick_intensity) * scaled_kick_strength), 0.0, 0.0)
 	]
 
 func get_headbob_vector(_delta:float) -> Array[Vector3]:
@@ -105,15 +103,14 @@ func get_headbob_vector(_delta:float) -> Array[Vector3]:
 	)
 	if prereq_check : return [Vector3.ZERO, Vector3.ZERO]
 	
-	var curr_move_state_check : bool = player_ref.state_machine.current_state is not FPMS_Idle
-	if !curr_move_state_check: 
+	if Vector2.ZERO.is_equal_approx(player_ref.get_input()): 
 		# We set step and sway timers to half their max value so that each step 
 		# (including your first) produces a consistent timing to player's steps.
 		step_timer = 0.5
 		sway_timer = 0.5
 		return [Vector3.ZERO, Vector3.ZERO]
 	
-	var v : Vector3 = player_ref.get_real_velocity() if curr_move_state_check else Vector3.ZERO
+	var v : Vector3 = player_ref.get_real_velocity()
 	var speed : float = snappedf(Vector2(v.x, v.z).length(), 0.01)
 	if speed > speed_gate and player_ref.is_on_floor():
 		step_timer += _delta * (speed / headbob_frequency)

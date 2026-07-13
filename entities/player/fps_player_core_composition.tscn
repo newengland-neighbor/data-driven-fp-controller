@@ -1,0 +1,128 @@
+[gd_scene load_steps=22 format=3 uid="uid://danwmarkn0le2"]
+
+[ext_resource type="Script" uid="uid://cs1qqqyrs4wlm" path="res://entities/player/fp_controller.gd" id="1_nbnu1"]
+[ext_resource type="Script" uid="uid://cxgy25qiubaab" path="res://entities/player/states/fp_on_ground.gd" id="4_ghjgy"]
+[ext_resource type="Script" uid="uid://b5jhf4mbxwein" path="res://common/state.gd" id="4_mqj0x"]
+[ext_resource type="Script" uid="uid://kdx6fwn5y461" path="res://entities/player/states/fp_in_air.gd" id="5_poec7"]
+[ext_resource type="Script" uid="uid://cirgcrtuofn2t" path="res://common/component_core.gd" id="8_poec7"]
+[ext_resource type="Script" uid="uid://bfe8rrn5maust" path="res://entities/player/fp_camera.gd" id="8_xqmfj"]
+[ext_resource type="Script" uid="uid://o26w0vktrwac" path="res://entities/player/components/fp_crouch_component.gd" id="9_6imgx"]
+[ext_resource type="Script" uid="uid://co7su8o0lbn30" path="res://entities/player/components/fp_sprint_component.gd" id="10_yjan8"]
+[ext_resource type="Script" uid="uid://van3cno7f4qd" path="res://entities/player/components/fp_cam_effects_component.gd" id="12_yjan8"]
+[ext_resource type="Script" uid="uid://wd4tciyn6u0y" path="res://common/state_machine_component.gd" id="14_8yutd"]
+
+[sub_resource type="Resource" id="Resource_6imgx"]
+script = ExtResource("4_ghjgy")
+coyote_timer_max = 0.15
+metadata/_custom_type_script = "uid://cxgy25qiubaab"
+
+[sub_resource type="Resource" id="Resource_8yutd"]
+script = ExtResource("5_poec7")
+jump_force = 7.5
+fall_threshold = -7.0
+metadata/_custom_type_script = "uid://kdx6fwn5y461"
+
+[sub_resource type="Resource" id="Resource_q4kx1"]
+script = ExtResource("14_8yutd")
+states = Array[ExtResource("4_mqj0x")]([SubResource("Resource_6imgx"), SubResource("Resource_8yutd")])
+init_state_index = 0
+metadata/_custom_type_script = "uid://wd4tciyn6u0y"
+
+[sub_resource type="Resource" id="Resource_poec7"]
+script = ExtResource("9_6imgx")
+speed_mod = 0.65
+collider_dimensions = {
+"Crouch": {
+"CamY-Pos": 0.8,
+"Height": 1.0,
+"Y-Position": 0.5
+},
+"Stand": {
+"CamY-Pos": 1.5,
+"Height": 1.7,
+"Y-Position": 0.85
+}
+}
+metadata/_custom_type_script = "uid://o26w0vktrwac"
+
+[sub_resource type="Resource" id="Resource_yjan8"]
+script = ExtResource("10_yjan8")
+speed_modifier = 2.0
+metadata/_custom_type_script = "uid://co7su8o0lbn30"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_onsno"]
+height = 1.7
+radius = 0.25
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_g0rj4"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 1.7
+radial_segments = 16
+rings = 0
+
+[sub_resource type="Curve" id="Curve_yjan8"]
+_limits = [0.0, 1.0, 0.0, 0.5]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0), -0.635718, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_g0rj4"]
+_limits = [-1.0, 1.0, 0.0, 1.0]
+_data = [Vector2(0, -1), 0.0, 9.0, 0, 0, Vector2(0.333, 1), 0.0, 0.0, 0, 0, Vector2(0.666, 1), 0.0, 0.0, 0, 0, Vector2(1, -1), -9.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_8yutd"]
+_limits = [-1.0, 1.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.25, 0), -2.88019, -2.88019, 0, 0, Vector2(0.5, -1), 0.0, 0.0, 0, 0, Vector2(0.75, 0), 2.81594, 2.81594, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Resource" id="Resource_g0rj4"]
+script = ExtResource("12_yjan8")
+enable_tilt = true
+tilt_amnt = 0.5
+tilt_intensity = 0.5
+enable_headbob = true
+headbob_curves = Array[Curve]([SubResource("Curve_g0rj4"), SubResource("Curve_8yutd")])
+speed_gate = 0.0
+headbob_intensity = 0.5
+headbob_frequency = 4.0
+headbob_amount = 0.04
+fallkick_intensity = 1.5
+fall_kick_curve = SubResource("Curve_yjan8")
+max_fall_time = 0.5
+metadata/_custom_type_script = "uid://van3cno7f4qd"
+
+[node name="FPSPlayer" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 17
+script = ExtResource("1_nbnu1")
+base_move_speed = 3.0
+state_machine = SubResource("Resource_q4kx1")
+max_step_height = 0.25
+components = Array[ExtResource("8_poec7")]([SubResource("Resource_poec7"), SubResource("Resource_yjan8")])
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CylinderShape3D_onsno")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+visible = false
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_g0rj4")
+
+[node name="CameraTarget" type="Marker3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+gizmo_extents = 1.0
+
+[node name="PlayerCamera" type="Camera3D" parent="." node_paths=PackedStringArray("camera_target")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+top_level = true
+current = true
+script = ExtResource("8_xqmfj")
+cam_lerp_speed = 50.0
+camera_target = NodePath("../CameraTarget")
+components = Array[ExtResource("8_poec7")]([SubResource("Resource_g0rj4")])

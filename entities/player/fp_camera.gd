@@ -1,18 +1,17 @@
 class_name FPCamera extends Camera3D
 
-##The maximum value the camera should be able to rotate along its x-axis.
+##The maximum value the camera should be able to rotate (in degrees) along its x-axis.
 @export var max_pitch : float = 90.0
-##The minimum value the camera should be able to rotate along its x-axis.
+##The minimum value the camera should be able to rotate (in degrees) along its x-axis.
 @export var min_pitch : float = -75.0
 
-##The base speed at which the camera is moved towards it's lerp target.
-##Total is modified by the player's MovementComponent, if it's present.
-@export var cam_lerp_speed : float = 5.0
+##The base speed at which the camera moves towards it's target.
+@export var cam_lerp_speed : float = 50.0
 
-##The speed at which the camera rotates as a result from mouse movement.
+##Modifier value used to scale total mouse movement speed.
 @export_range(0.1, 1.0, 0.1) var mouse_sensitivity : float = 1.0
 
-##The target position that the camera should attempt to lerp towards.
+##The target position that the camera should attempt to move towards.
 @export var camera_target : Marker3D
 var _target_lerp_pos : Vector3 = Vector3(0.0, 1.5, 0.0)
 
@@ -112,6 +111,7 @@ func handle_mouse_rotation(_delta:float) -> void:
 		camera_target.global_rotation.y + lerped_rot_mods.y,
 		camera_target.global_rotation.z + lerped_rot_mods.z + lean_rot_z
 		)
+	#print(lean_rot_z)
 
 func get_lerp_target() -> Marker3D: return camera_target
 

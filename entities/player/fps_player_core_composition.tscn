@@ -48,6 +48,7 @@ metadata/_custom_type_script = "uid://o26w0vktrwac"
 [sub_resource type="Resource" id="Resource_yjan8"]
 script = ExtResource("10_yjan8")
 speed_modifier = 2.0
+omni_directional = true
 metadata/_custom_type_script = "uid://co7su8o0lbn30"
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_onsno"]
@@ -85,7 +86,7 @@ enable_headbob = true
 headbob_curves = Array[Curve]([SubResource("Curve_g0rj4"), SubResource("Curve_8yutd")])
 speed_gate = 0.0
 headbob_intensity = 0.5
-headbob_frequency = 4.0
+headbob_frequency = 0.25
 headbob_amount = 0.04
 fallkick_intensity = 1.5
 fall_kick_curve = SubResource("Curve_yjan8")
@@ -123,6 +124,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 top_level = true
 current = true
 script = ExtResource("8_xqmfj")
-cam_lerp_speed = 50.0
 camera_target = NodePath("../CameraTarget")
 components = Array[ExtResource("8_poec7")]([SubResource("Resource_g0rj4")])

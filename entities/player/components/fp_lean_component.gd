@@ -71,23 +71,25 @@ func _handle_lean(delta:float) -> void:
 		0.0
 	)
 	lean_sensor.force_shapecast_update()
-	
+
 	if lean_sensor.is_colliding(): 
 		lean_sensor.debug_shape_custom_color = Color.RED
 		curr_lean_pos = 0.0
-		curr_lean_rot = lerpf(
-			get_owner().rotation.z,
-			deg_to_rad(0.0),
-			delta * 15.0
-		)
 	else:
 		lean_sensor.debug_shape_custom_color = Color.GREEN
 		curr_lean_pos = _get_lean_direction() * lean_amnt_pos
-		curr_lean_rot = lerpf(
-			get_owner().rotation.z,
-			deg_to_rad(-_get_lean_direction() * lean_amnt_angle),
-			delta * 15.0
+	
+	var target_rot : float = (
+		0.0 if _get_lean_direction() == 0 
+		else deg_to_rad(-_get_lean_direction() * lean_amnt_angle)
 		)
 	
-	send_pos_modifier.emit(0, curr_lean_pos)
-	send_rot_modifier.emit(curr_lean_rot)
+	curr_lean_rot = MathPlus.f_exp_decay(
+		curr_lean_rot,
+		target_rot,
+		MathPlus.DECAY,
+		delta
+		)
+	
+	send_pos_modifier.emit(0, snappedf(curr_lean_pos,0.001))
+	send_rot_modifier.emit(snappedf(curr_lean_rot,0.001))

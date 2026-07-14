@@ -20,7 +20,9 @@ var move_speed_mods : Dictionary[String,float]
 signal step_performed(lerp_target:Vector3)
 
 @export_group("Rigidbody Interaction")
+##The mass of the player body itself.
 @export var player_mass : float = 80.0
+##The force at which rigidbody objects should be pushed away from the player's moving body.
 @export var push_force : float = 2.5
 @export_group("Components")
 ##Array of Resource-based components used to modify base controller's behavior.
@@ -90,7 +92,7 @@ func _on_modifier_received(key:String,remove:bool=false,val:float=0.0) -> void:
 		print(move_speed_mods)
 		return
 	move_speed_mods[key] = val
-	print(move_speed_mods)
+	#print(move_speed_mods)
 
 func has_modifier(key:String) -> Variant:
 	@warning_ignore("incompatible_ternary")
@@ -249,14 +251,11 @@ func handle_physics_collision() -> void:
 	var col_obj : RigidBody3D = col.get_collider() as RigidBody3D
 	if !col_obj: return
 	
-	#var mass_ratio : float = snappedf(min(player_mass / col_obj.mass, 1.0), 0.01)
+	# If the collided object's mass is equal to, or exceeds, the player's mass, cancel the push.
+	var mass_ratio : float = snappedf(min(col_obj.mass / player_mass, 1.0), 0.01)
+	if mass_ratio >= 1.0: return
 	
 	var push_direction : Vector3 = -col.get_normal()
-	#var pf : float = (
-		#owner.velocity.dot(push_direction)
-		#- col_obj.linear_velocity.dot(push_direction)
-	#)
-	
 	col_obj.apply_impulse(
 		push_direction * push_force,
 		col.get_position() - col_obj.global_position

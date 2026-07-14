@@ -1,22 +1,33 @@
 class_name FPCameraEffectComponent extends ComponentCore
 
+##If false, the camera tilt effect will not be used.
 @export var enable_tilt : bool = true
+##The base amount (in degrees) that the camera should roll when moving horizontally.
 @export var tilt_amnt : float = 0.5
+##Modifier value used to scale the camera tilt effect.
 @export_range(0.1, 1.0, 0.1) var tilt_intensity : float = 0.5
 
+##If false, the head bob  effect will not be used.
 @export var enable_headbob : bool = true
-##Curves used to simulate a headbob effect. Expects at least two defined curve elements.
+##Curves used to smoothly animate a headbob effect. Expects at least two defined curve elements.
 @export var headbob_curves : Array[Curve]
+##The minimum velocity magnitude the player should be moving until headbobbing begins.
 @export_range(0.0, 1.0, 0.05) var speed_gate : float = 0.1
+##Modifier value used to scale the head bob effect.
 @export_range(0.1, 1.0, 0.1) var headbob_intensity : float = 0.5
-@export_range(0.0, 6.0, 0.05) var headbob_frequency : float = 3.5
+##How fast should the headbob effect be? (Higher values = faster effect)
+@export_range(0.1, 1.0, 0.05) var headbob_frequency : float = 0.25
+##The base amount that the camera should move and rotate when headbobbing.
 @export_range(0.0, 0.1, 0.05) var headbob_amount : float = 0.04
 var step_timer : float = 0.0
 var sway_timer : float = 0.0
 signal request_step_sound
 
+##Modifier value used to scale the fall kick effect.
 @export_range(1.0, 3.0, 0.5) var fallkick_intensity : float = 1.5
+##Curve used to smoothly animate the fall kick.
 @export var fall_kick_curve : Curve
+##The maximum time (in seconds) a fall kick should last for
 @export var max_fall_time : float = 0.5
 var fall_timer : float = 0.0
 
@@ -75,7 +86,11 @@ func get_tilt_rot() -> Vector3:
 		tilt_values.x = dots.y * deg_to_rad(tilt_amnt) * tilt_intensity
 		tilt_values.y = dots.x * -deg_to_rad(tilt_amnt / 2.0) * tilt_intensity
 	else: tilt_values = Vector2.ZERO
-	return Vector3(tilt_values.x, 0.0, tilt_values.y)
+	return Vector3(
+		snappedf(tilt_values.x, 0.0001),
+		0.0, 
+		snappedf(tilt_values.y, 0.0001)
+		)
 
 var scaled_kick_strength : float = 0.0
 func _on_landing_received(val:float,threshold:float) -> void:
@@ -92,8 +107,16 @@ func get_fallkick_vector(_delta:float) -> Array[Vector3]:
 	if fall_timer >= max_fall_time: return [Vector3.ZERO, Vector3.ZERO]
 	if fall_timer < max_fall_time: fall_timer += _delta
 	return [
-		Vector3(0.0, -fall_kick_curve.sample_baked(fall_timer) * 0.1, 0.0),
-		Vector3(-deg_to_rad((fall_kick_curve.sample_baked(fall_timer) * fallkick_intensity) * scaled_kick_strength), 0.0, 0.0)
+		Vector3(
+			0.0,
+			snappedf(-fall_kick_curve.sample_baked(fall_timer) * 0.1, 0.0001), 
+			0.0
+			),
+		Vector3(
+			snappedf(-deg_to_rad((fall_kick_curve.sample_baked(fall_timer) * fallkick_intensity) * scaled_kick_strength), 0.0001), 
+			0.0, 
+			0.0
+			)
 	]
 
 func get_headbob_vector(_delta:float) -> Array[Vector3]:
@@ -113,8 +136,8 @@ func get_headbob_vector(_delta:float) -> Array[Vector3]:
 	var v : Vector3 = player_ref.get_real_velocity()
 	var speed : float = snappedf(Vector2(v.x, v.z).length(), 0.01)
 	if speed > speed_gate and player_ref.is_on_floor():
-		step_timer += _delta * (speed / headbob_frequency)
-		sway_timer += _delta * (speed / headbob_frequency) / 2
+		step_timer += _delta * (speed * headbob_frequency)
+		sway_timer += _delta * (speed * headbob_frequency) / 2
 		
 		if step_timer >= 1.0:
 			request_step_sound.emit()
@@ -123,8 +146,15 @@ func get_headbob_vector(_delta:float) -> Array[Vector3]:
 		
 		if !enable_headbob: return [Vector3.ZERO, Vector3.ZERO]
 		
-		var bob_y : float = headbob_curves[0].sample_baked(step_timer) * headbob_amount * headbob_intensity
-		var sway_z : float = headbob_curves[1].sample_baked(sway_timer) * headbob_amount * headbob_intensity
+		var bob_y : float = snappedf(
+			headbob_curves[0].sample_baked(step_timer) * headbob_amount * headbob_intensity,
+			0.0001
+			)
+		var sway_z : float = snappedf(
+			 headbob_curves[1].sample_baked(sway_timer) * headbob_amount * headbob_intensity,
+			0.0001
+			)
+		
 		return [Vector3(0.0, bob_y, 0.0), Vector3(0.0, 0.0, sway_z / 4.0)]
 	return [Vector3.ZERO, Vector3.ZERO]
 

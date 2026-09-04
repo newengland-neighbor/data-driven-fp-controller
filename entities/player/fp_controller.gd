@@ -41,12 +41,6 @@ func _ready() -> void:
 	for comp in components:
 		comp.bind(self)
 		comp.ready()
-	
-	var msg_id : int = -1
-	# If generated ID exists in the message router's registry, keep generating a new ID until
-	# a free spot for that key is found.
-	while (MessageRouter.registry_has_key(msg_id) or msg_id == -1): msg_id = randi()
-	MessageRouter.register_client(msg_id, handle_message)
 
 func _process(delta: float) -> void:
 	state_machine.update(delta)
@@ -263,44 +257,3 @@ func handle_physics_collision() -> void:
 		push_direction * push_force,
 		col.get_position() - col_obj.global_position
 	)
-
-##################
-# Message handling
-##################
-func handle_message(_new_msg:Message) -> void:
-	var msg_details : Array[Variant] = _new_msg.get_var_list()
-	var _msg_data : Dictionary = msg_details[3]
-	match msg_details[2]:
-		Message.MessageTypes.OVERRIDE_FSM_STATE: 
-			if (!_msg_data.has("new_state_indx")
-			or !_msg_data.has("prev_state_data")): 
-				return
-			state_machine.on_state_transition(
-				_msg_data["new_state_indx"],
-				_msg_data["prev_state_data"])
-		_: return
-
-#func handle_message(_new_msg:Message) -> void:
-	#var msg_details : Array[Variant] = _new_msg.get_var_list()
-	#var msg_data : Dictionary = msg_details[3]
-	#match msg_details[2]:
-		#Message.MessageTypes.OVERRIDE_FSM_STATE:
-			## If no data is present in msg, output error and exit function.
-			#if msg_data.is_empty(): 
-				#printerr("From %s: Parsed message: Override FSM State - Data dictionary missing." % self.name)
-				#return
-			## If crucial data entries are missing from data dictionary, output error and exit function.
-			#var data_check : bool = !msg_data.has("new_move_state") or !msg_data.has("state_data")
-			#if data_check:
-				#var msng_data : String = ""
-				#if !msg_data.has("new_move_state"): msng_data += "new_move_state, "
-				#if !msg_data.has("state_data"): msng_data += "state_data"
-				#printerr(
-					#"From %s: Parsed message: Override FSM State - %s is missing from data dictionary." % 
-					#[self.name, msng_data]
-					#)
-				#return
-			#
-			#var new_state : int = msg_data["new_move_state"]
-			#state_machine.on_state_transition(new_state, msg_data["state_data"])
-		#_: return

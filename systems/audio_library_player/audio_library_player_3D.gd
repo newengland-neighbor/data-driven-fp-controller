@@ -19,5 +19,5 @@ func play_sound_from_key(key:String,_db:float=0.0) -> void:
 		_db,
 		1.0,
 		AudioServer.PlaybackType.PLAYBACK_TYPE_DEFAULT,
-		&"SoundEffects")
+		&"SFX")
 	

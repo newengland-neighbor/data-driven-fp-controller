@@ -130,7 +130,7 @@ func get_headbob_vector(_delta:float) -> Array[Vector3]:
 		return [Vector3.ZERO, Vector3.ZERO]
 	
 	var v : Vector3 = player_ref.get_real_velocity()
-	var speed : float = snappedf(Vector2(v.x, v.z).length(), 0.01)
+	var speed : float = snappedf(Vector3(v.x, v.y, v.z).length(), 0.01)
 	if speed > speed_gate and player_ref.is_on_floor():
 		step_timer += _delta * (speed * headbob_frequency)
 		sway_timer += _delta * (speed * headbob_frequency) / 2

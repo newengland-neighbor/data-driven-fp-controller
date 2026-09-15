@@ -18,12 +18,16 @@
 [sub_resource type="Resource" id="Resource_6imgx"]
 script = ExtResource("4_ghjgy")
 coyote_timer_max = 0.15
+move_acceleration = 8.0
+move_drag = 12.0
 metadata/_custom_type_script = "uid://cxgy25qiubaab"
 
 [sub_resource type="Resource" id="Resource_8yutd"]
 script = ExtResource("5_poec7")
 jump_force = 7.5
 fall_threshold = -7.0
+move_acceleration = 6.0
+move_drag = 3.0
 metadata/_custom_type_script = "uid://kdx6fwn5y461"
 
 [sub_resource type="Resource" id="Resource_q4kx1"]
@@ -53,7 +57,7 @@ metadata/_custom_type_script = "uid://o26w0vktrwac"
 [sub_resource type="Resource" id="Resource_yjan8"]
 script = ExtResource("10_yjan8")
 speed_modifier = 1.8
-omni_directional = false
+omni_directional = true
 step_volume_modifier = 2.0
 metadata/_custom_type_script = "uid://co7su8o0lbn30"
 
@@ -154,7 +158,7 @@ components = Array[ExtResource("8_poec7")]([SubResource("Resource_g0rj4"), SubRe
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 stream = SubResource("AudioStreamPolyphonic_6i2yp")
 max_polyphony = 8
-bus = &"SoundEffects"
+bus = &"SFX"
 audio_library = ExtResource("14_1a1gv")
 
 [node name="GroundCast3D" type="RayCast3D" parent="."]

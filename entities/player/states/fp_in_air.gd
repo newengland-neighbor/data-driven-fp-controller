@@ -7,7 +7,7 @@ class_name FPMS_InAir extends FPMoveState
 
 var character_body_ref : FPController
 
-var direction : Vector3 = Vector3.ZERO
+var lerped_velo : Vector3 = Vector3.ZERO
 var jumped : bool
 
 signal has_landed(fall_velocity:float,fall_threshold:float)
@@ -22,29 +22,30 @@ func bind(new:ComponentCore,indx:int) -> void:
 func enter(_prev_state:int,_data:={}) -> void: 
 	if !_data.is_empty():
 		var prev_velocity = _data["prev_velocity"]
-		direction = prev_velocity * Vector3(1.0, 0.0, 1.0)
+		lerped_velo = prev_velocity * Vector3(1.0, 0.0, 1.0)
 		if _prev_state != MoveStates.FROZEN and _data["has_jumped"]: 
 			character_body_ref.velocity.y = jump_force
 			jumped = _data["has_jumped"]
 			has_jumped.emit()
 			request_sound.emit("jump")
 			# Send message to whatever sound system we'll use to play sounds made by the player.
-	else: direction = Vector3.ZERO
+	else: lerped_velo = Vector3.ZERO
 
 func handle_input(_event:InputEvent) -> void: pass
 func update(_delta:float) -> void: pass
 
 func physics_update(_delta:float) -> void:
-	direction = MathPlus.v3_exp_decay(
-		direction,
-		character_body_ref.get_desired_direction(),
-		MathPlus.DECAY,
-		_delta
-		)
+	var wish_dir : Vector3 = (
+		character_body_ref.get_desired_direction() 
+		if character_body_ref.get_input() != Vector2.ZERO 
+		else Vector3.ZERO )
 	
-	if direction:
-		character_body_ref.velocity.x = direction.x * character_body_ref.get_total_speed()
-		character_body_ref.velocity.z = direction.z * character_body_ref.get_total_speed()
+	if character_body_ref.get_desired_direction().length() > 0:
+		lerped_velo = MathPlus.v3_exp_decay(lerped_velo,wish_dir,move_acceleration,_delta)
+	else: lerped_velo = MathPlus.v3_exp_decay(lerped_velo,wish_dir,move_drag,_delta)
+	
+	character_body_ref.velocity.x = lerped_velo.x * character_body_ref.get_total_speed()
+	character_body_ref.velocity.z = lerped_velo.z * character_body_ref.get_total_speed()
 	character_body_ref.velocity.y += -9.8 * 3.0 * _delta
 	var downward_velocity : float = snappedf(character_body_ref.velocity.y,0.01)
 	
@@ -57,7 +58,7 @@ func physics_update(_delta:float) -> void:
 			print("fall threshold breached!")
 			has_landed.emit(downward_velocity,fall_threshold)
 			request_sound.emit("landing")
-		finished.emit(MoveStates.ON_GROUND,{"prev_velocity":direction})
+		finished.emit(MoveStates.ON_GROUND,{"prev_velocity":lerped_velo})
 
 func exit() -> void: 
 	jumped = false

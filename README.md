@@ -30,6 +30,6 @@ The following actions are executed with the following controls:
 - Jumping: Space
 - Crouching: C
 - Leaning: Q, E
-- Free Camera: Escape
+- Free Mouse: Escape
 
 The control scheme (save for the camera's mouse-driven movement and the escape key) can be modified in the Godot Editor in: Project Settings &rarr; Input Map

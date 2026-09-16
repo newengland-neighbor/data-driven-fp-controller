@@ -16,7 +16,7 @@ This player controller is built with behavior-altering, resource-based component
  
   - A camera lean component. Allows the player to move the camera lerp target along its x-axis. Combined with a directional camera-rotation effect, this allows the player to peak around corners. These changes are sent to the parent camera as modifiers to the target's position and the camera's rotation.
 
-- A crouch component. This allows the player to enter various "stance states", which dynamically alter their collision shape and the position of the camera's lerp target. The component sends its data to the player's main movement script via signal, which then modifies the player's collision dimensions and movement speed via as requested.
+- A crouch component. This allows the player to enter various "stance states", which dynamically alter their collision shape and the position of the camera's lerp target. The component sends its data to the player's main movement script via signal, which then modifies the player's collision dimensions and movement speed as requested.
 
 - A sprint component. This allows the player to move at a faster speed. This effect is cancelled out by the crouch component whenever the player is considered to be crouching.
 

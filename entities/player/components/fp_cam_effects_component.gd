@@ -75,8 +75,7 @@ func get_tilt_rot() -> Vector3:
 	if !enable_tilt: return Vector3.ZERO
 	
 	var tilt_values : Vector2 = Vector2.ZERO
-	# We make tilt independent from player's velocity to provide visual feedback for obstructed movement.
-	var v : Vector3 = player_ref.get_desired_direction() * player_ref.get_total_speed()
+	var v : Vector3 = player_ref.get_real_velocity()
 	var speed : float = snappedf(Vector2(v.x, v.z).length(), 0.01)
 	if speed > speed_gate and player_ref.is_on_floor():
 		var dots : Vector2 = Vector2(
@@ -85,18 +84,12 @@ func get_tilt_rot() -> Vector3:
 		tilt_values.x = dots.y * deg_to_rad(tilt_amnt) * tilt_intensity
 		tilt_values.y = dots.x * -deg_to_rad(tilt_amnt / 2.0) * tilt_intensity
 	else: tilt_values = Vector2.ZERO
-	return Vector3(
-		snappedf(tilt_values.x, 0.0001),
-		0.0, 
-		snappedf(tilt_values.y, 0.0001))
+	return Vector3(snappedf(tilt_values.x, 0.0001), 0.0, snappedf(tilt_values.y, 0.0001))
 
 var scaled_kick_strength : float = 0.0
 func _on_landing_received(val:float,threshold:float) -> void:
 	fall_timer = 0.0
-	var a : float = clampf(
-		val / threshold,
-		1.0,
-		3.0)
+	var a : float = clampf(val / threshold, 1.0, 3.0)
 	scaled_kick_strength = snappedf(a,0.1)
 
 func get_fallkick_vector(_delta:float) -> Array[Vector3]:

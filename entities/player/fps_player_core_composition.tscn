@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://danwmarkn0le2"]
+[gd_scene load_steps=27 format=3 uid="uid://danwmarkn0le2"]
 
 [ext_resource type="Script" uid="uid://cs1qqqyrs4wlm" path="res://entities/player/fp_controller.gd" id="1_nbnu1"]
 [ext_resource type="Script" uid="uid://cxgy25qiubaab" path="res://entities/player/states/fp_on_ground.gd" id="4_ghjgy"]
@@ -9,10 +9,9 @@
 [ext_resource type="Script" uid="uid://bfe8rrn5maust" path="res://entities/player/fp_camera.gd" id="8_xqmfj"]
 [ext_resource type="Script" uid="uid://co7su8o0lbn30" path="res://entities/player/components/fp_sprint_component.gd" id="10_yjan8"]
 [ext_resource type="Script" uid="uid://dn7wxu07rvry0" path="res://entities/player/components/fp_lean_component.gd" id="11_6imgx"]
-[ext_resource type="Script" uid="uid://cae13a1rneqe5" path="res://entities/player/ground_cast_3d.gd" id="12_g0rj4"]
 [ext_resource type="Script" uid="uid://van3cno7f4qd" path="res://entities/player/components/fp_cam_effects_component.gd" id="12_yjan8"]
 [ext_resource type="PackedScene" uid="uid://o02mj0ocerj3" path="res://systems/audio_library_player/audio_library_player_3D.tscn" id="13_g0rj4"]
-[ext_resource type="Resource" uid="uid://b2r4xbo7wgkfr" path="res://entities/player/sounds/footstep_library_default.tres" id="14_1a1gv"]
+[ext_resource type="Resource" uid="uid://b2r4xbo7wgkfr" path="res://entities/player/sounds/footstep_concrete.tres" id="14_1a1gv"]
 [ext_resource type="Script" uid="uid://wd4tciyn6u0y" path="res://common/state_machine_component.gd" id="14_8yutd"]
 
 [sub_resource type="Resource" id="Resource_6imgx"]
@@ -160,9 +159,3 @@ stream = SubResource("AudioStreamPolyphonic_6i2yp")
 max_polyphony = 8
 bus = &"SFX"
 audio_library = ExtResource("14_1a1gv")
-
-[node name="GroundCast3D" type="RayCast3D" parent="."]
-unique_name_in_owner = true
-debug_shape_custom_color = Color(1, 0, 1, 1)
-debug_shape_thickness = 5
-script = ExtResource("12_g0rj4")

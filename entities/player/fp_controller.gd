@@ -35,7 +35,7 @@ const STEP_CLEARANCE : float = 0.05
 @export var components: Array[ComponentCore]
 
 func _ready() -> void:
-	%GroundCast3D.global_position = self.get_global_foot_pos()
+	#%GroundCast3D.global_position = self.get_global_foot_pos()
 	state_machine.bind(self)
 	state_machine.ready()
 	
@@ -199,7 +199,7 @@ func handle_step_up(delta:float) -> bool:
 	var nrml_angle : float = snappedf(
 		Vector3.UP.angle_to(test["result_details"].get_collision_normal()), 
 		0.001 )
-	if nrml_angle > snappedf(floor_max_angle,0.001): return false
+	if nrml_angle > snappedf(self.floor_max_angle,0.001): return false
 	
 	# If all the tests validate the step, move the player upward by the height of the step.
 	var col_pt : Vector3 = t_start.origin + test["result_details"].get_travel()
@@ -212,14 +212,16 @@ func handle_step_down() -> bool:
 	if self.is_on_floor(): return false
 	# If the ground cast doesn't hit anything, or if the distance between the collision's 
 	# and the player's global positions exceeds max_step_height, exit function.
-	%GroundCast3D.force_raycast_update()
-	var ground_cast_check : bool = (func() -> bool:
-		return true if %GroundCast3D.is_colliding() else false
-		).call()
-	if !ground_cast_check: return false
+	var start_pos : Vector3 = self.global_position + (Vector3.UP * STEP_CLEARANCE)
+	var test : Dictionary = PhysOps3D.shoot_ray_3d(
+		get_world_3d().direct_space_state,
+		start_pos,
+		start_pos + Vector3.DOWN,
+		1, [self.get_rid()] )
+	if test.is_empty(): return false
 	
 	# If collision happens, but the surface normal is too steep, exit.
-	var floor_angle_deg : float = Vector3.UP.angle_to(%GroundCast3D.get_collision_normal())
+	var floor_angle_deg : float = Vector3.UP.angle_to(test["normal"])
 	if floor_angle_deg > self.floor_max_angle: return false
 	
 	# Use downward shapecast to determine real step position.
@@ -228,7 +230,7 @@ func handle_step_down() -> bool:
 		Vector3.DOWN * (max_step_height + STEP_CLEARANCE))
 	
 	# If the physics test collides with the ground, execute a downward step.
-	var test : Dictionary = PhysOps3D.run_test_motion(self.get_rid(),check_params)
+	test = PhysOps3D.run_test_motion(self.get_rid(),check_params)
 	if !test["result"]: return false
 	
 	var step_height : float = test["result_details"].get_travel().y

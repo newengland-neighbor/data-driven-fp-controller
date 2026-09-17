@@ -77,7 +77,7 @@ func get_tilt_rot() -> Vector3:
 	var tilt_values : Vector2 = Vector2.ZERO
 	var v : Vector3 = player_ref.get_real_velocity()
 	var speed : float = snappedf(Vector2(v.x, v.z).length(), 0.01)
-	if speed > speed_gate and player_ref.is_on_floor():
+	if speed > speed_gate and player_ref.state_machine.current_state.index == FPMoveState.MoveStates.ON_GROUND:
 		var dots : Vector2 = Vector2(
 			v.dot(get_owner().global_basis.x), 
 			v.dot(get_owner().global_basis.z))

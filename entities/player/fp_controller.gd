@@ -192,11 +192,16 @@ func handle_step_up(delta:float) -> bool:
 	t_params = PhysOps3D.create_test_params(t_start,t_motion)
 	test = PhysOps3D.run_test_motion(self.get_rid(),t_params)
 	if !test["result"]: return false
-	var nrml_angle : float = Vector3.UP.angle_to(test["result_details"].get_collision_normal())
-	if nrml_angle > floor_max_angle: return false
 	
-	# If all the tests validate the step, move the player upward by the height
-	# of the step.
+	# Ground slope check.
+	# If the step we're attempting to move up to exceeds our maximum floor angle,
+	# cancel step.
+	var nrml_angle : float = snappedf(
+		Vector3.UP.angle_to(test["result_details"].get_collision_normal()), 
+		0.001 )
+	if nrml_angle > snappedf(floor_max_angle,0.001): return false
+	
+	# If all the tests validate the step, move the player upward by the height of the step.
 	var col_pt : Vector3 = t_start.origin + test["result_details"].get_travel()
 	var step_height : float = absf(col_pt.y - self.global_position.y)
 	self.global_position.y += step_height

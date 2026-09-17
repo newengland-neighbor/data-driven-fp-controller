@@ -1,8 +1,8 @@
 class_name StateMachineComponent extends ComponentCore
 
-##Array of states that the StateMachineComponent uses.
+## Array of states that the StateMachineComponent uses.
 @export var states : Array[StateResource]
-##Value used to determine the initial state of the StateMachineComponent.
+## Value used to determine the initial state of the StateMachineComponent.
 @export_range(0,100,1) var init_state_index : int = 0
 
 var current_state : StateResource

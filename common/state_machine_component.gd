@@ -1,9 +1,7 @@
 class_name StateMachineComponent extends ComponentCore
 
 ## Array of states that the StateMachineComponent uses.
-@export var states : Array[StateResource]
-## Value used to determine the initial state of the StateMachineComponent.
-@export_range(0,100,1) var init_state_index : int = 0
+@export var states : Dictionary[String, StateResource]
 
 var current_state : StateResource
 
@@ -12,25 +10,23 @@ func bind(new_owner:Node) -> void:
 
 func get_state(query:Object) -> StateResource:
 	for state in states:
-		if is_instance_of(state,query): return state
+		if is_instance_of(states[state],query): return states[state]
 	return null
 
-func on_state_transition(target_state_index:int,data:Dictionary={}) -> void:
-	if target_state_index >= states.size(): 
-		printerr("Player Movement FSM does not contain state index.")
+func on_state_transition(target_state:String,data:Dictionary={}) -> void:
+	if !states.has(target_state): 
+		printerr("FSM does not contain state.")
 		return
 	
-	var prev_state : int = current_state.get_index()
+	var prev_state : String = current_state.get_state_name()
 	current_state.exit()
-	current_state = states[target_state_index]
+	current_state = states[target_state]
 	current_state.enter(prev_state,data)
 
 func ready() -> void: 
-	var state_index : int = 0
-	for s in states:
-		s.bind(self,state_index)
-		state_index += 1
-	current_state = states[init_state_index]
+	for s in states: 
+		states[s].bind(self)
+	current_state = states[states.keys()[0]]
 
 func update(_delta:float) -> void: current_state.update(_delta)
 func physics_update(_delta:float) -> void: current_state.physics_update(_delta)

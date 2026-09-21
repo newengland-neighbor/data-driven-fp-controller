@@ -1,6 +1,6 @@
 class_name StateMachineComponent extends ComponentCore
 
-## Array of states that the StateMachineComponent uses.
+## Dictionary of states that the StateMachineComponent uses.
 @export var states : Dictionary[String, StateResource]
 
 var current_state : StateResource

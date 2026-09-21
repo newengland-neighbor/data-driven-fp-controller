@@ -37,7 +37,8 @@ func physics_update(_delta:float) -> void:
 		if character_body_ref.get_input() != Vector2.ZERO 
 		else Vector3.ZERO )
 	
-	if character_body_ref.get_desired_direction().length() > 0:
+	# Lerp horizontal movement vector based on wish_dir's length value.
+	if wish_dir.length() > 0:
 		lerped_velo = MathPlus.v3_exp_decay(lerped_velo,wish_dir,move_acceleration,_delta)
 	else: lerped_velo = MathPlus.v3_exp_decay(lerped_velo,wish_dir,move_drag,_delta)
 	

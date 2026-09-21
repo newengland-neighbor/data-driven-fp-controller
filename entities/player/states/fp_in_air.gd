@@ -39,13 +39,17 @@ func physics_update(_delta:float) -> void:
 		if character_body_ref.get_input() != Vector2.ZERO 
 		else Vector3.ZERO )
 	
-	if character_body_ref.get_desired_direction().length() > 0:
+	# Lerp horizontal movement vector based on wish_dir's length value.
+	if wish_dir.length() > 0:
 		lerped_velo = MathPlus.v3_exp_decay(lerped_velo,wish_dir,move_acceleration,_delta)
 	else: lerped_velo = MathPlus.v3_exp_decay(lerped_velo,wish_dir,move_drag,_delta)
 	
 	character_body_ref.velocity.x = lerped_velo.x * character_body_ref.get_total_speed()
 	character_body_ref.velocity.z = lerped_velo.z * character_body_ref.get_total_speed()
-	character_body_ref.velocity.y += -9.8 * 3.0 * _delta
+	
+	# Terminal velocity check - if we're below that value, speed player's fall up.
+	if (character_body_ref.velocity * Vector3.UP).length() < terminal_velo:
+		character_body_ref.velocity.y += -9.8 * 3.0 * _delta
 	var downward_velocity : float = snappedf(character_body_ref.velocity.y,0.01)
 	
 	character_body_ref.move_and_slide()

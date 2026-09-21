@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioLibrary" load_steps=5 format=3 uid="uid://b2r4xbo7wgkfr"]
+
+[ext_resource type="Script" uid="uid://dj7inlh2ii5r" path="res://systems/audio_library_player/audio_library.gd" id="1_xjbtx"]
+[ext_resource type="AudioStream" uid="uid://bufd5e0q47f2w" path="res://assets/sounds/footsteps_concrete_rndm.tres" id="2_dnw0r"]
+[ext_resource type="AudioStream" uid="uid://xaosyjyt7yqp" path="res://assets/sounds/jump_concrete_01.wav" id="3_22jum"]
+[ext_resource type="AudioStream" uid="uid://cyv8ohxm771uq" path="res://assets/sounds/landing_concrete_01.wav" id="4_lqp7a"]
+
+[resource]
+script = ExtResource("1_xjbtx")
+streams = Dictionary[String, AudioStream]({
+"footsteps": ExtResource("2_dnw0r"),
+"jump": ExtResource("3_22jum"),
+"landing": ExtResource("4_lqp7a")
+})
+metadata/_custom_type_script = "uid://dj7inlh2ii5r"

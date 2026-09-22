@@ -4,6 +4,8 @@ class_name FPMS_InAir extends FPMoveState
 @export var fall_threshold : float = -7.0
 ## The strength of the player's jump. Higher values => higher jumps.
 @export var jump_force : float = 7.5
+## The player's terminal velocity value, as measured in meters per second.
+@export var terminal_velo : float = 56.0
 
 var character_body_ref : FPController
 

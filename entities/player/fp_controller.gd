@@ -161,6 +161,7 @@ func handle_step_up(delta:float) -> bool:
 	var col_normals : Array[Vector3]
 	for i in test:
 		if !test[i]["result"]: continue
+		if test[i]["result_details"].get_collision_normal().y > 0.1: continue
 		col_normals.append(test[i]["result_details"].get_collision_normal())
 	
 	# Step depth sweep.
